@@ -1,0 +1,12 @@
+name: 'Asana Github Pull Request Link'
+description: 'Closes Asana tickets when the assigned pull request is closed'
+inputs:
+  token:
+    description: 'Asana Token'
+    required: true
+branding:
+  icon: 'chevron-right'  
+  color: 'gray-dark'
+runs:
+  using: 'node12'
+  main: 'index.js'

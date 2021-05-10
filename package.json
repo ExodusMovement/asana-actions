@@ -1,0 +1,26 @@
+{
+  "name": "asana-actions",
+  "version": "1.0.0",
+  "description": "",
+  "main": "asana.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ExodusMovement/asana-actions.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ExodusMovement/asana-actions/issues"
+  },
+  "homepage": "https://github.com/ExodusMovement/asana-actions#readme",
+  "dependencies": {
+    "@actions/core": "^1.2.7",
+    "@actions/github": "^4.0.0",
+    "@exodus/fetch": "^1.2.0",
+    "xml-escape": "^1.1.0"
+  }
+}
