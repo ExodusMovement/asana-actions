@@ -7,6 +7,7 @@ name: Pull Request
 on:
   pull_request:
     types: [ opened, edited ]
+jobs:
   asana:
     runs-on: ubuntu-latest
     steps:
