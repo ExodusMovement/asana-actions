@@ -3,7 +3,7 @@ const github = require('@actions/github')
 const asana = require('./asana')
 
 try {
-  const ASANA_TOKEN = core.getInput('asana-token')
+  const ASANA_TOKEN = core.getInput('token')
   const PR = github.context.payload.pull_request
 
   if (!ASANA_TOKEN){
