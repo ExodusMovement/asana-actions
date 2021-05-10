@@ -14,5 +14,5 @@ jobs:
     - name: Asana Github Pull Request Link
       uses: ExodusMovement/asana-actions@1.0.2
       with:
-        asana-token: ${{ secrets.ASANA_TOKEN }}
+        token: ${{ secrets.ASANA_TOKEN }}
 ```
