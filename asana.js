@@ -5,7 +5,8 @@ const xmlescape = require('xml-escape')
 const fetch = (token) => {
   return fetchival('https://app.asana.com/api/1.0', {
     headers: {
-      Authorization: 'Bearer ' + token
+      Authorization: 'Bearer ' + token,
+      "content-type": "application/json"
     }
   })
 }
@@ -31,7 +32,7 @@ module.exports.completeAsanaTask = async function (token, gid, id) {
       'completed': true
     }
   }
-  const url = 'tasks/' + gid
+  const url = 'tasks/' + id
   await fetch(token)(url).put(data)
 }
 
