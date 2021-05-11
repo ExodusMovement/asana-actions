@@ -1,6 +1,6 @@
 # asana-actions
 
-add this to your `.github/workflows/pull-request.yml`
+Add this to your `.github/workflows/pull-request.yml`
 
 ```
 name: Pull Request
