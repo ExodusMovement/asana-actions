@@ -70,7 +70,7 @@ module.exports.addGithubPrToAsanaTask = async function (token, gid, title, url) 
   await module.exports.addAsanaComment(token, gid, comment)
 }
 
-module.exports.getAsanaShortId = async function getAsanaShortId (str) {
+module.exports.getAsanaShortId = function getAsanaShortId (str) {
   if (!str) return null
   const match = /!([0-9]{4,10})/.exec(str)
   if (match) return match[1]
