@@ -25,7 +25,7 @@ const run = async () => {
     if (task) core.info('got matching task: ' + JSON.stringify(task))
     else core.error('did not find matching task')
   } catch (err) {
-    core.error(error.message)
+    core.error(err.message)
   }
 }
 
