@@ -14,8 +14,10 @@ const run = async () => {
     
     const shortId = asana.getAsanaShortId(PR.title)
     if (!shortId) return core.info('no matching asana short id in: ' + PR.title)
+    else core.info('searching for short id: ' + shortId)
     const task = await asana.getMatchingAsanaTask(ASANA_TOKEN, WORKSPACE, shortId)
-    core.info('got matching task: ' + JSON.stringify(task))
+    if (task) core.info('got matching task: ' + JSON.stringify(task))
+    else core.error('did not find matching task')
   } catch (err) {
     core.error(error.message)
   }

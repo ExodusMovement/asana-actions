@@ -10,6 +10,10 @@ const fetch = (token) => {
   })
 }
 
+function timeout(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms))
+}
+
 module.exports.addAsanaComment = async function (token, gid, comment) {
   const data = {
     'data': {
@@ -56,6 +60,7 @@ module.exports.getMatchingAsanaTask = async function (token, gid, id) {
       }
     }
     d1.setHours(d1.getHours() - hoursInc)
+    await timeout(1000)
   }
   return null
 }
