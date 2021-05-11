@@ -47,7 +47,7 @@ const run = async () => {
           body: newBody
         }
 
-        const octokit = github.getOctokit(github.token)
+        const octokit = github.getOctokit(github_token)
         const response = await octokit.pulls.update(request)
         if (response.status !== 200) {
           core.error('There was an issue while trying to update the pull-request.')
