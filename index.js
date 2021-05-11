@@ -15,9 +15,13 @@ const run = async () => {
     }
 
     const lookupTask = async () => {
-      if (!shortId) return core.info('no matching asana short id in: ' + pr.title)
-      else core.info('searching for short id: ' + shortId)
-      
+      if (!shortId) {
+        core.info('no matching asana short id in: ' + pr.title)
+        return 
+      } else {
+        core.info('searching for short id: ' + shortId)
+      }
+
       const task = await asana.getMatchingAsanaTask(asana_token, workspace, shortId)
       
       if (task) core.info('got matching task: ' + JSON.stringify(task))
@@ -31,6 +35,7 @@ const run = async () => {
     if (action === 'opened' || action === 'edited') {
       if (pr.body.indexOf(commentPrefix) === -1) {
         const task = await lookupTask()
+        if (!task) return
         const link = `This PR is linked to [this Asana task.](https://app.asana.com/0/${workspace}/${task.gid})`
         const newBody = pr.body += '\n\n' + commentPrefix + link
 
@@ -49,6 +54,7 @@ const run = async () => {
       }
     } else if (action === 'closed' && pr.merged) {
       const task = await lookupTask()
+      if (!task) return
       await asana.completeAsanaTask(asana_token, workspace, task.gid)
     }
   } catch (err) {
