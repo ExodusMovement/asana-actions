@@ -26,7 +26,7 @@ const run = async () => {
     if (task) core.info('got matching task: ' + JSON.stringify(task))
     else return core.error('did not find matching task')
 
-    await asana.completeAsanaTask(ASANA_TOKEN, WORKSPACE, shortId)
+    await asana.completeAsanaTask(ASANA_TOKEN, WORKSPACE, task.gid)
   } catch (err) {
     core.error(err.message)
   }
