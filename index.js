@@ -13,8 +13,8 @@ try {
   
   const shortId = asana.getAsanaShortId(PR.title)
   if (!shortId) return core.info('no matching asana short id in: ' + PR.title)
-  const task = asana.getMatchingAsanaTask(ASANA_TOKEN, WORKSPACE, shortId)
-  core.info('got matching task: ' + task)
+  const task = await asana.getMatchingAsanaTask(ASANA_TOKEN, WORKSPACE, shortId)
+  core.info('got matching task: ' + JSON.stringify(task))
 } catch (error) {
   core.error(error.message);
 }

@@ -29,7 +29,12 @@ module.exports.searchByDate = async function (token, gid, before, after) {
     '&limit=100' +
     '&sort_by=modified_at'
   core.info('fetching ' + url)
-  const res = await fetch(token)(url).get()
+  let res
+  try {
+    res = await fetch(token)(url).get()
+  } catch (err) {
+    // ignore
+  }
   if (res) return res.data
   else return []
 }
