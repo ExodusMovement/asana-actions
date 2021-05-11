@@ -4,7 +4,7 @@ This GitHub Action will link Asana tasks to GitHub Pull Requests. When a PR is m
 
 ## Usage
 
-When you open a PR put the last 4 or more digits from the task ID in the url of the task from Asana into the PR in the format `!1234`. Your PR description will be updated by this action to link to the Asana task. When you merge your PR, the Asana task will be marked as completed.
+When you open a PR put the last 4 or more digits from the task ID in the url of the task from Asana into the PR title in the format `!1234`, for example `fix: handle uncaught exception !7194`. Your PR description will be updated by this action to link to the Asana task. When you merge your PR, the Asana task will be marked as completed.
 
 ## Setup
 
