@@ -2,6 +2,10 @@ const core = require('@actions/core')
 const github = require('@actions/github')
 const asana = require('./asana')
 
+function timeout(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms))
+}
+
 const run = async () => {
   try {
     const ASANA_TOKEN = core.getInput('token')
@@ -11,6 +15,8 @@ const run = async () => {
     if (!ASANA_TOKEN){
       throw({message: 'ASANA_TOKEN not set'})
     }
+    
+    await timeout(5000)
     
     const shortId = asana.getAsanaShortId(PR.title)
     if (!shortId) return core.info('no matching asana short id in: ' + PR.title)
