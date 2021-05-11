@@ -1,3 +1,4 @@
+const core = require('@actions/core')
 const { fetchival } = require('@exodus/fetch')
 const xmlescape = require('xml-escape')
 
@@ -27,6 +28,7 @@ module.exports.searchByDate = async function (token, gid, before, after) {
     '&modified_at.after=' + after.toISOString() +
     '&limit=100' +
     '&sort_by=modified_at'
+  core.info('fetching ' + url)
   const res = await fetch(token)(url).get()
   if (res) return res.data
   else return []
