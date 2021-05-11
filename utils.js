@@ -1,4 +1,5 @@
 const core = require('@actions/core')
+const github = require('@actions/github')
 const { fetchival } = require('@exodus/fetch')
 const xmlescape = require('xml-escape')
 
@@ -15,6 +16,20 @@ function timeout(ms) {
   return new Promise(resolve => setTimeout(resolve, ms))
 }
 
+module.exports.updatePRBody = async function (workspace, github_token, task, pr, commentPrefix) {
+  const link = `This PR is linked to [this Asana task.](https://app.asana.com/0/${workspace}/${task.gid})`
+  const newBody = pr.body += '\n\n' + commentPrefix + link
+
+  const request = {
+    owner: github.context.repo.owner,
+    repo: github.context.repo.repo,
+    pull_number: github.context.payload.pull_request.number,
+    body: newBody
+  }
+
+  const octokit = github.getOctokit(github_token)
+  return octokit.pulls.update(request)
+}
 module.exports.addAsanaComment = async function (token, gid, comment) {
   const data = {
     'data': {

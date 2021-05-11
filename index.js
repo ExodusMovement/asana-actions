@@ -1,6 +1,6 @@
 const core = require('@actions/core')
 const github = require('@actions/github')
-const asana = require('./asana')
+const utils = require('./utils')
 
 const run = async () => {
   try {
@@ -17,46 +17,41 @@ const run = async () => {
 
     const lookupTask = async () => {
       if (!shortId) {
-        core.info('no matching asana short id in: ' + pr.title)
+        core.info('No matching asana short id in: ' + pr.title)
         return 
       } else {
-        core.info('searching for short id: ' + shortId)
+        core.info('Searching for short id: ' + shortId)
       }
 
-      const task = await asana.getMatchingAsanaTask(asana_token, workspace, shortId)
+      const task = await utils.getMatchingAsanaTask(asana_token, workspace, shortId)
       
-      if (task) core.info('got matching task: ' + JSON.stringify(task))
-      else core.error('did not find matching task')
+      if (task) core.info('Got matching task: ' + JSON.stringify(task))
+      else core.error('Did not find matching task')
 
       return task
     }
 
-    const shortId = asana.getAsanaShortId(pr.title)
+    const shortId = utils.getAsanaShortId(pr.title)
 
     if (action === 'opened' || action === 'edited') {
       if (pr.body.indexOf(commentPrefix) === -1) {
         const task = await lookupTask()
         if (!task) return
-        const link = `This PR is linked to [this Asana task.](https://app.asana.com/0/${workspace}/${task.gid})`
-        const newBody = pr.body += '\n\n' + commentPrefix + link
 
-        const request = {
-          owner: github.context.repo.owner,
-          repo: github.context.repo.repo,
-          pull_number: github.context.payload.pull_request.number,
-          body: newBody
-        }
+        const response = await utils.updatePRBody(workspace, github_token, task, pr, commentPrefix)
 
-        const octokit = github.getOctokit(github_token)
-        const response = await octokit.pulls.update(request)
         if (response.status !== 200) {
           core.error('There was an issue while trying to update the pull-request.')
+        } else {
+          core.info('Modified PR body with asana link')
         }
+      } else {
+        core.info('Skipping, already found asana link on PR')
       }
     } else if (action === 'closed' && pr.merged) {
       const task = await lookupTask()
       if (!task) return
-      await asana.completeAsanaTask(asana_token, workspace, task.gid)
+      await utils.completeAsanaTask(asana_token, workspace, task.gid)
     }
   } catch (err) {
     core.error(err.message)
