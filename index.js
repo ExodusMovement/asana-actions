@@ -51,7 +51,9 @@ const run = async () => {
     } else if (action === 'closed' && pr.merged) {
       const task = await lookupTask()
       if (!task) return
+
       await utils.completeAsanaTask(asana_token, workspace, task.gid)
+      core.info('Marked linked Asana task as completed')
     }
   } catch (err) {
     core.error(err.message)
