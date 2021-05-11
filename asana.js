@@ -25,6 +25,16 @@ module.exports.addAsanaComment = async function (token, gid, comment) {
   await fetch(token)(url).post(data)
 }
 
+module.exports.completeAsanaTask = async function (token, gid, id) {
+  const data = {
+    'data': {
+      'completed': true
+    }
+  }
+  const url = 'tasks/' + gid
+  await fetch(token)(url).put(data)
+}
+
 module.exports.searchByDate = async function (token, gid, before, after) {
   const url = 'workspaces/' + gid + '/tasks/search' +
     '?opt_fields=gid,name' +

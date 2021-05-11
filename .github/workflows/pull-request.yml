@@ -1,7 +1,7 @@
 name: Pull Request
 on:
   pull_request:
-    types: [ opened, edited ]
+    types: [ opened, closed, edited ]
 jobs:
   asana:
     runs-on: ubuntu-latest
