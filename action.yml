@@ -7,6 +7,9 @@ inputs:
   workspace:
     description: 'Asana Workspace ID'
     required: true
+  commentPrefix:
+    description: 'Prefix that goes before the asana link comment'
+    required: false
 branding:
   icon: 'chevron-right'  
   color: 'gray-dark'

@@ -4,29 +4,53 @@ const asana = require('./asana')
 
 const run = async () => {
   try {
-    const ASANA_TOKEN = core.getInput('token')
-    const WORKSPACE = core.getInput('workspace')
-    const PR = github.context.payload.pull_request
-    const ACTION = github.context.payload.action
-    core.info('action: ' + ACTION)
+    const asana_token = core.getInput('token')
+    const workspace = core.getInput('workspace')
+    const commentPrefix = core.getInput('commentPrefix') || 'Linked Asana: '
+    const pr = github.context.payload.pull_request
+    const action = github.context.payload.action
 
-    if (!ASANA_TOKEN){
+    if (!asana_token){
       throw({message: 'ASANA_TOKEN not set'})
     }
-        
-    const shortId = asana.getAsanaShortId(PR.title)
 
-    if (ACTION !== 'closed') return
-    
-    if (!shortId) return core.info('no matching asana short id in: ' + PR.title)
-    else core.info('searching for short id: ' + shortId)
-    
-    const task = await asana.getMatchingAsanaTask(ASANA_TOKEN, WORKSPACE, shortId)
-    
-    if (task) core.info('got matching task: ' + JSON.stringify(task))
-    else return core.error('did not find matching task')
+    const lookupTask = async () => {
+      if (!shortId) return core.info('no matching asana short id in: ' + pr.title)
+      else core.info('searching for short id: ' + shortId)
+      
+      const task = await asana.getMatchingAsanaTask(asana_token, workspace, shortId)
+      
+      if (task) core.info('got matching task: ' + JSON.stringify(task))
+      else core.error('did not find matching task')
 
-    await asana.completeAsanaTask(ASANA_TOKEN, WORKSPACE, task.gid)
+      return task
+    }
+
+    const shortId = asana.getAsanaShortId(pr.title)
+
+    if (action === 'opened' || action === 'edited') {
+      if (pr.body.indexOf(commentPrefix) === -1) {
+        const task = await lookupTask()
+        const link = `This PR is linked to [this Asana task.](https://app.asana.com/0/${workspace}/${task.gid})`
+        const newBody = pr.body += '\n\n' + commentPrefix + link
+
+        const request = {
+          owner: github.context.repo.owner,
+          repo: github.context.repo.repo,
+          pull_number: github.context.payload.pull_request.number,
+          body: newBody
+        }
+
+        const client = new github.GitHub(github.token)
+        const response = await client.pulls.update(request)
+        if (response.status !== 200) {
+          core.error('There was an issue while trying to update the pull-request.')
+        }
+      }
+    } else if (action === 'closed' && pr.merged) {
+      const task = await lookupTask()
+      await asana.completeAsanaTask(asana_token, workspace, task.gid)
+    }
   } catch (err) {
     core.error(err.message)
   }

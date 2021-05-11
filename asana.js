@@ -72,7 +72,7 @@ module.exports.getMatchingAsanaTask = async function (token, gid, id) {
 }
 
 module.exports.addGithubPrToAsanaTask = async function (token, gid, title, url) {
-  const comment = '<strong>Linked PR:</strong> ' + xmlescape(title) + '\n<a href="' + url + '"/>'
+  const comment = '<strong>Linked GitHub PR:</strong> ' + xmlescape(title) + '\n<a href="' + url + '"/>'
   await module.exports.addAsanaComment(token, gid, comment)
 }
 
