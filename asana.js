@@ -1,13 +1,15 @@
 const { fetchival } = require('@exodus/fetch')
 const xmlescape = require('xml-escape')
 
-const fetch = fetchival('https://app.asana.com/api/1.0', {
-  headers: {
-    Authorization: 'Bearer ' + process.env.ASANA_ACCESS_TOKEN
-  }
-})
+const fetch = (token) => {
+  return fetchival('https://app.asana.com/api/1.0', {
+    headers: {
+      Authorization: 'Bearer ' + token
+    }
+  })
+}
 
-module.exports.addAsanaComment = async function (gid, comment) {
+module.exports.addAsanaComment = async function (token, gid, comment) {
   const data = {
     'data': {
       'is_pinned': true,
@@ -15,22 +17,22 @@ module.exports.addAsanaComment = async function (gid, comment) {
     }
   }
   const url = 'tasks/' + gid + '/stories'
-  await fetch(url).post(data)
+  await fetch(token)(url).post(data)
 }
 
-module.exports.searchByDate = async function (before, after) {
-  const url = 'workspaces/' + process.env.ASANA_WORKSPACE_ID + '/tasks/search' +
+module.exports.searchByDate = async function (token, gid, before, after) {
+  const url = 'workspaces/' + gid + '/tasks/search' +
     '?opt_fields=gid,name' +
     '&modified_at.before=' + before.toISOString() +
     '&modified_at.after=' + after.toISOString() +
     '&limit=100' +
     '&sort_by=modified_at'
-  const res = await fetch(url).get()
+  const res = await fetch(token)(url).get()
   if (res) return res.data
   else return []
 }
 
-module.exports.getMatchingAsanaTask = async function (id) {
+module.exports.getMatchingAsanaTask = async function (token, gid, id) {
   var d1 = new Date()
   var d2 = new Date(d1)
   var lookedAt = 0
@@ -38,7 +40,7 @@ module.exports.getMatchingAsanaTask = async function (id) {
   var hoursInc = 3
   while (lookedAt < 10000 && callsMade < 100) {
     d2.setHours(d2.getHours() - hoursInc)
-    let rows = await module.exports.searchByDate(d1, d2)
+    let rows = await module.exports.searchByDate(token, gid, d1, d2)
     callsMade++
     lookedAt += rows.length
     for (var i = 0; i < rows.length; i++) {
@@ -51,9 +53,9 @@ module.exports.getMatchingAsanaTask = async function (id) {
   return null
 }
 
-module.exports.addGithubPrToAsanaTask = async function (title, url, gid) {
+module.exports.addGithubPrToAsanaTask = async function (token, gid, title, url) {
   const comment = '<strong>Linked PR:</strong> ' + xmlescape(title) + '\n<a href="' + url + '"/>'
-  await module.exports.addAsanaComment(asanaData.gid, comment)
+  await module.exports.addAsanaComment(token, gid, comment)
 }
 
 module.exports.getAsanaShortId = async function getAsanaShortId (str) {

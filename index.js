@@ -4,6 +4,7 @@ const asana = require('./asana')
 
 try {
   const ASANA_TOKEN = core.getInput('token')
+  const WORKSPACE = core.getInput('workspace')
   const PR = github.context.payload.pull_request
 
   if (!ASANA_TOKEN){
@@ -12,7 +13,7 @@ try {
   
   const shortId = asana.getAsanaShortId(PR.title)
   if (!shortId) return core.info('no matching asana short id in: ' + PR.title)
-  const task = asana.getMatchingAsanaTask(shortId)
+  const task = asana.getMatchingAsanaTask(ASANA_TOKEN, WORKSPACE, shortId)
   core.info('got matching task: ' + task)
 } catch (error) {
   core.error(error.message);
