@@ -4,6 +4,9 @@ inputs:
   token:
     description: 'Asana Token'
     required: true
+  workspace:
+    description: 'Asana Workspace ID'
+    required: true
 branding:
   icon: 'chevron-right'  
   color: 'gray-dark'
