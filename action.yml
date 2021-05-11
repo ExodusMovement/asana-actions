@@ -1,13 +1,16 @@
 name: 'Asana Github Pull Request Link'
 description: 'Closes Asana tickets when the assigned pull request is closed'
 inputs:
-  token:
+  asana_token:
     description: 'Asana Token'
     required: true
+  github_token:
+    description: 'GitHub Token (automatically set by GitHub)'
+    required: false
   workspace:
     description: 'Asana Workspace ID'
     required: true
-  commentPrefix:
+  comment_prefix:
     description: 'Prefix that goes before the asana link comment'
     required: false
 branding:

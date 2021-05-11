@@ -4,9 +4,10 @@ const asana = require('./asana')
 
 const run = async () => {
   try {
-    const asana_token = core.getInput('token')
+    const github_token = core.getInput('github_token')
+    const asana_token = core.getInput('asana_token')
     const workspace = core.getInput('workspace')
-    const commentPrefix = core.getInput('commentPrefix') || 'Linked Asana: '
+    const commentPrefix = core.getInput('comment_prefix') || 'Linked Asana: '
     const pr = github.context.payload.pull_request
     const action = github.context.payload.action
 
