@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Asana Github Pull Request Link
-      uses: ExodusMovement/asana-actions@1.0.4
+      uses: ExodusMovement/asana-actions@1.0.5
       with:
         token: ${{ secrets.ASANA_TOKEN }}
 ```
