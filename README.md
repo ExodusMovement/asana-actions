@@ -6,6 +6,9 @@ This GitHub Action will link Asana tasks to GitHub Pull Requests. When a PR is m
 
 When you open a PR put the last 4 or more digits from the task ID in the url of the task from Asana into the PR title in the format `!1234`, for example `fix: handle uncaught exception !7194`. Your PR description will be updated by this action to link to the Asana task. When you merge your PR, the Asana task will be marked as completed.
 
+By default no action additional action will be taken when the PR is opened and the task will be closed when the PR is merged.  Use inputs
+`on_open_action` and `on_merge_action` to customize this.  The keyword `CLOSE` is used to close the task, the keyword `MOVE <SectionName>` where `<SectionName>` is the name of the section to target, will move the Asana task to a new section.
+
 ## Setup
 
 You will need an Asana Public Access Token and your Asana Workspace ID
@@ -27,6 +30,9 @@ jobs:
         asana_token: ${{ secrets.ASANA_TOKEN }}
         workspace: ${{ secrets.ASANA_WORKSPACE_ID }}
         github_token: ${{ secrets.GITHUB_TOKEN }}
+        #optional inputs:
+        on_open_action: CLOSE|MOVE <SectionName>
+        on_merge_action: CLOSE|MOVE <SectionName>
 
 ```
 
