@@ -51,6 +51,29 @@ module.exports.completeAsanaTask = async function (token, gid, id) {
   await fetch(token)(url).put(data)
 }
 
+module.exports.getGidForSection = async function (token, gid, sectionName) {
+  const sectionUrl = '/projects/' + gid + '/sections'
+  const sections = await fetch(token)(sectionUrl).get()
+
+  return sections.data.find(s => s.name === sectionName)
+}
+
+module.exports.moveAsanaTaskToSection = async function (token, gid, id, sectionName) {
+  const section = await this.getGidForSection(token, gid, sectionName)
+
+  if(!section) {
+    core.warning('Section with name ' + sectionName + ' not found.')
+  }
+
+  const data = {
+    'data': {
+      'task': id + ''
+    }
+  }
+  const url = 'sections/' + section.gid + '/addTask'
+  await fetch(token)(url).post(data)
+}
+
 module.exports.searchByDate = async function (token, gid, before, after) {
   const url = 'workspaces/' + gid + '/tasks/search' +
     '?opt_fields=gid,name' +
