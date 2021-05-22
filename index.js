@@ -35,27 +35,27 @@ const run = async () => {
       return task
     }
 
-    const isCloseAction = (action) => {
-      return action.startsWith(ACTION_CLOSE_PREFIX)
+    const isCloseAction = (onAction) => {
+      return onAction.startsWith(ACTION_CLOSE_PREFIX)
     }
 
-    const isMoveAction = (action) => {
-      return action.startsWith(ACTION_MOVE_TO_SECTION_PREFIX)
+    const isMoveAction = (onAction) => {
+      return onAction.startsWith(ACTION_MOVE_TO_SECTION_PREFIX)
     }
 
-    const getSectionFromAction = (action) => {
-      return action
+    const getSectionFromAction = (onAction) => {
+      return onAction
           .substring(ACTION_MOVE_TO_SECTION_PREFIX.length, action.length)
           .trim()
     }
 
-    const doAction = (task, action) => {
-      if(isCloseAction(action)) {
+    const doAction = (task, onAction) => {
+      if(isCloseAction(onAction)) {
         await utils.completeAsanaTask(asana_token, workspace, task.gid)
         core.info('Marked linked Asana task as completed')
       }
-      if(isMoveAction(action)) {
-        const sectionName = getSectionFromAction(action)
+      if(isMoveAction(onAction)) {
+        const sectionName = getSectionFromAction(onAction)
         await utils.moveAsanaTaskToSection(asana_token, workspace, task.gid, sectionName)
         core.info('Moved linked Asana task to ' + sectionName)
       }
