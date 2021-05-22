@@ -29,3 +29,12 @@ jobs:
         github_token: ${{ secrets.GITHUB_TOKEN }}
 
 ```
+
+## Testing changes
+
+- Commit the changes you want to test to a branch
+- Run `npm version patch` to bump the version in package.json (this will also create a commit)
+- Edit `.github/workflows/pull-request.yml` to use your new version
+- Push all the changes to your branch
+- Create a new release on https://github.com/ExodusMovement/asana-actions/releases with the `Tag version` field set to the same semver that you just pushed
+- Finally, open a PR for your branch. It should automatically run your action on that PR
