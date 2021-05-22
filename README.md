@@ -30,10 +30,6 @@ jobs:
         asana_token: ${{ secrets.ASANA_TOKEN }}
         workspace: ${{ secrets.ASANA_WORKSPACE_ID }}
         github_token: ${{ secrets.GITHUB_TOKEN }}
-        #optional inputs:
-        on_open_action: CLOSE|MOVE <SectionName>
-        on_merge_action: CLOSE|MOVE <SectionName>
-
 ```
 
 ## Testing changes
