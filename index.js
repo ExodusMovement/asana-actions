@@ -45,7 +45,7 @@ const run = async () => {
 
     const getSectionFromAction = (onAction) => {
       return onAction
-          .substring(ACTION_MOVE_TO_SECTION_PREFIX.length, action.length)
+          .substring(ACTION_MOVE_TO_SECTION_PREFIX.length, onAction.length)
           .trim()
     }
 
