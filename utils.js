@@ -41,7 +41,7 @@ module.exports.addAsanaComment = async function (token, gid, comment) {
   await fetch(token)(url).post(data)
 }
 
-module.exports.completeAsanaTask = async function (token, gid, id) {
+module.exports.completeAsanaTask = async function (token, id) {
   const data = {
     'data': {
       'completed': true
@@ -51,26 +51,13 @@ module.exports.completeAsanaTask = async function (token, gid, id) {
   await fetch(token)(url).put(data)
 }
 
-module.exports.getGidForSection = async function (token, gid, sectionName) {
-  const sectionUrl = '/projects/' + gid + '/sections'
-  const sections = await fetch(token)(sectionUrl).get()
-
-  return sections.data.find(s => s.name === sectionName)
-}
-
-module.exports.moveAsanaTaskToSection = async function (token, gid, id, sectionName) {
-  const section = await this.getGidForSection(token, gid, sectionName)
-
-  if(!section) {
-    core.warning('Section with name ' + sectionName + ' not found.')
-  }
-
+module.exports.moveAsanaTaskToSection = async function (token, taskId, sectionId) {
   const data = {
     'data': {
-      'task': id + ''
+      'task': taskId + ''
     }
   }
-  const url = 'sections/' + section.gid + '/addTask'
+  const url = 'sections/' + sectionId + '/addTask'
   await fetch(token)(url).post(data)
 }
 

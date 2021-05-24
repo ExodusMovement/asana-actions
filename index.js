@@ -50,14 +50,14 @@ const run = async () => {
     }
 
     const doAction = async (task, onAction) => {
-      if(isCloseAction(onAction)) {
-        await utils.completeAsanaTask(asana_token, workspace, task.gid)
+      if (isCloseAction(onAction)) {
+        await utils.completeAsanaTask(asana_token, task.gid)
         core.info('Marked linked Asana task as completed')
       }
-      if(isMoveAction(onAction)) {
-        const sectionName = getSectionFromAction(onAction)
-        await utils.moveAsanaTaskToSection(asana_token, workspace, task.gid, sectionName)
-        core.info('Moved linked Asana task to ' + sectionName)
+      if (isMoveAction(onAction)) {
+        const sectionId = getSectionFromAction(onAction)
+        await utils.moveAsanaTaskToSection(asana_token, task.gid, sectionId)
+        core.info('Moved linked Asana task to section ' + sectionId)
       }
     }
 
@@ -79,7 +79,7 @@ const run = async () => {
         core.info('Skipping, already found asana link on PR')
       }
 
-      if(action === 'opened' && on_open_action) {
+      if (action === 'opened' && on_open_action) {
         await doAction(task, on_open_action)
       }
 
@@ -88,7 +88,7 @@ const run = async () => {
       if (!task) return
 
 
-      if(on_merge_action) {
+      if (on_merge_action) {
         await doAction(task, on_merge_action)
       }
     }
