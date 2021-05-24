@@ -12,3 +12,4 @@ jobs:
         asana_token: ${{ secrets.ASANA_TOKEN }}
         workspace: ${{ secrets.ASANA_WORKSPACE_ID }}
         github_token: ${{ secrets.GITHUB_TOKEN }}
+        on_merge_action: MOVE_TO_SECTION 1200159935951583
