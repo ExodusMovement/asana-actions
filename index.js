@@ -56,6 +56,7 @@ const run = async () => {
       }
       if (isMoveAction(onAction)) {
         const sectionId = getSectionFromAction(onAction)
+        core.info('Moving Asana task to section ' + sectionId)
         await utils.moveAsanaTaskToSection(asana_token, task.gid, sectionId)
         core.info('Moved linked Asana task to section ' + sectionId)
       }

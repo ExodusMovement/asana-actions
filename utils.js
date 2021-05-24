@@ -54,10 +54,11 @@ module.exports.completeAsanaTask = async function (token, id) {
 module.exports.moveAsanaTaskToSection = async function (token, taskId, sectionId) {
   const data = {
     'data': {
-      'task': taskId + ''
+      'task': taskId
     }
   }
   const url = 'sections/' + sectionId + '/addTask'
+  core.info('posting task to ' + url)
   await fetch(token)(url).post(data)
 }
 
