@@ -13,6 +13,12 @@ inputs:
   comment_prefix:
     description: 'Prefix that goes before the asana link comment'
     required: false
+  on_open_action:
+    description: 'The action to perform when a PR is opened (CLOSE|MOVE <Section Name>)'
+    required: false
+  on_merge_action:
+    description: 'The action to perform when a PR is merged (CLOSE|MOVE <Section Name>).  Defaults to CLOSE'
+    required: false
 branding:
   icon: 'chevron-right'  
   color: 'gray-dark'

@@ -41,7 +41,7 @@ module.exports.addAsanaComment = async function (token, gid, comment) {
   await fetch(token)(url).post(data)
 }
 
-module.exports.completeAsanaTask = async function (token, gid, id) {
+module.exports.completeAsanaTask = async function (token, id) {
   const data = {
     'data': {
       'completed': true
@@ -49,6 +49,17 @@ module.exports.completeAsanaTask = async function (token, gid, id) {
   }
   const url = 'tasks/' + id
   await fetch(token)(url).put(data)
+}
+
+module.exports.moveAsanaTaskToSection = async function (token, taskId, sectionId) {
+  const data = {
+    'data': {
+      'task': taskId
+    }
+  }
+  const url = 'sections/' + sectionId + '/addTask'
+  core.info('posting task to ' + url)
+  await fetch(token)(url).post(data)
 }
 
 module.exports.searchByDate = async function (token, gid, before, after) {
