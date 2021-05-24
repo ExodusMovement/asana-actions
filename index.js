@@ -49,7 +49,7 @@ const run = async () => {
           .trim()
     }
 
-    const doAction = (task, onAction) => {
+    const doAction = async (task, onAction) => {
       if(isCloseAction(onAction)) {
         await utils.completeAsanaTask(asana_token, workspace, task.gid)
         core.info('Marked linked Asana task as completed')
@@ -80,7 +80,7 @@ const run = async () => {
       }
 
       if(action === 'opened' && on_open_action) {
-        doAction(task, on_open_action)
+        await doAction(task, on_open_action)
       }
 
     } else if (action === 'closed' && pr.merged) {
@@ -89,7 +89,7 @@ const run = async () => {
 
 
       if(on_merge_action) {
-        doAction(task, on_merge_action)
+        await doAction(task, on_merge_action)
       }
     }
   } catch (err) {
