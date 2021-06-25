@@ -1,4 +1,4 @@
-name: Pull Request
+name: Asana Link
 on:
   issues:
     types: [ opened, closed, edited ]
@@ -8,7 +8,7 @@ jobs:
   asana:
     runs-on: ubuntu-latest
     steps:
-    - name: Asana Github Pull Request Link
+    - name: Asana Github Link
       uses: ExodusMovement/asana-actions@2.1.5-beta
       with:
         asana_token: ${{ secrets.ASANA_TOKEN }}
