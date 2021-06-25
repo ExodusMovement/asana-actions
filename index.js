@@ -20,6 +20,8 @@ const run = async () => {
       throw({message: 'ASANA_TOKEN not set'})
     }
 
+    core.info(`Running action for ${isIssue ? 'issue' : 'PR'} #${pr.number}: ${pr.title}`)
+
     const lookupTask = async () => {
       if (!shortId) {
         core.info('No matching asana short id in: ' + pr.title)
