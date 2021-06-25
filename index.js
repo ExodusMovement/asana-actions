@@ -87,7 +87,7 @@ const run = async () => {
         await doAction(task, on_open_action)
       }
 
-    } else if (action === 'closed' && pr.merged) {
+    } else if (action === 'closed' && (isIssue ? true : pr.merged)) {
       const task = await lookupTask()
       if (!task) return
 
