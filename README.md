@@ -21,19 +21,21 @@ Where `<projectId>` can be copied from the Asana URL viewing a project board, an
 
 You will need an Asana Public Access Token and your Asana Workspace ID
 
-Add this to your `.github/workflows/pull-request.yml`
+Add this to your `.github/workflows/asana-link.yml`
 
 ```
-name: Pull Request
+name: Asana Link
 on:
+  issues:
+    types: [ opened, closed, edited ]
   pull_request:
     types: [ opened, closed, edited ]
 jobs:
   asana:
     runs-on: ubuntu-latest
     steps:
-    - name: Asana Github Pull Request Link
-      uses: ExodusMovement/asana-actions@2.1.4
+    - name: Asana Github Link
+      uses: ExodusMovement/asana-actions@2.1.5
       with:
         asana_token: ${{ secrets.ASANA_TOKEN }}
         workspace: ${{ secrets.ASANA_WORKSPACE_ID }}
