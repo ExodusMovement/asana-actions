@@ -16,20 +16,21 @@ function timeout(ms) {
   return new Promise(resolve => setTimeout(resolve, ms))
 }
 
-module.exports.updatePRBody = async function (workspace, github_token, task, pr, commentPrefix) {
+module.exports.updatePRBody = async function (workspace, github_token, task, pr, commentPrefix, isIssue) {
   const link = `This PR is linked to [this Asana task.](https://app.asana.com/0/${workspace}/${task.gid})`
   const newBody = pr.body += '\n\n' + commentPrefix + link
-
   const request = {
     owner: github.context.repo.owner,
     repo: github.context.repo.repo,
-    pull_number: github.context.payload.pull_request.number,
     body: newBody
   }
-
+  if (isIssue) request.issue_number = pr.number
+  else request.pull_number = pr.number
   const octokit = github.getOctokit(github_token)
-  return octokit.pulls.update(request)
+  if (isIssue) return octokit.issues.update(request)
+  else return octokit.pulls.update(request)
 }
+
 module.exports.addAsanaComment = async function (token, gid, comment) {
   const data = {
     'data': {
