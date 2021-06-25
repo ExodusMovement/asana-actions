@@ -12,7 +12,8 @@ const run = async () => {
     const commentPrefix = core.getInput('comment_prefix') || 'Linked Asana: '
     const on_open_action = core.getInput('on_open_action')
     const on_merge_action = core.getInput('on_merge_action') || ACTION_CLOSE_PREFIX
-    const pr = github.context.payload.pull_request
+    const isIssue = !!github.context.payload.issue
+    const pr = github.context.payload.pull_request || github.context.payload.issue
     const action = github.context.payload.action
 
     if (!asana_token){
@@ -69,10 +70,10 @@ const run = async () => {
         const task = await lookupTask()
         if (!task) return
 
-        const response = await utils.updatePRBody(workspace, github_token, task, pr, commentPrefix)
+        const response = await utils.updatePRBody(workspace, github_token, task, pr, commentPrefix, isIssue)
 
         if (response.status !== 200) {
-          core.error('There was an issue while trying to update the pull-request.')
+          core.error('There was an issue while trying to update the pull-request/issue.')
         } else {
           core.info('Modified PR body with asana link')
         }
