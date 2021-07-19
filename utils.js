@@ -48,7 +48,7 @@ module.exports.updatePRBody = async function (workspace, github_token, tasks, pr
   else return octokit.pulls.update(request)
 }
 
-module.exports.addAsanaComment = async function (token, tasks, comment) { // token, gid, comment
+module.exports.addAsanaComment = async function (token, tasks, comment) {
   if (!tasks || !tasks.length) return
   const data = {
     'data': {
@@ -82,7 +82,7 @@ module.exports.completeAsanaTasks = async function (token, tasks) {
   }
 }
 
-module.exports.moveAsanaTasksToSection = async function (token, tasks, sectionId) { //token, taskId, sectionId
+module.exports.moveAsanaTasksToSection = async function (token, tasks, sectionId) {
   if (!tasks || !tasks.length) return
   try {
     await Promise.all([...tasks].map(task => {
@@ -142,7 +142,7 @@ module.exports.getMatchingAsanaTasks = async function (token, gid, ids) {
   return null
 }
 
-module.exports.addGithubPrToAsanaTask = async function (token, tasks, title, url) { //token, gid, title, url
+module.exports.addGithubPrToAsanaTask = async function (token, tasks, title, url) {
   if (!tasks || !tasks.length) return
   const comment = '<strong>Linked GitHub PR:</strong> ' + xmlescape(title) + '\n<a href="' + url + '"/>'
   await module.exports.addAsanaComment(token, tasks, comment)
