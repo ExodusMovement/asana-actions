@@ -97,7 +97,6 @@ const run = async () => {
       tasks = await lookupTasks()
       if (!tasks || !tasks.length) return
 
-
       if (on_merge_action) {
         await doAction(tasks, on_merge_action)
       }

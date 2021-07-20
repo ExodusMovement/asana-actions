@@ -143,8 +143,8 @@ module.exports.searchByDate = async function (token, gid, before, after) {
 }
 
 module.exports.getMatchingAsanaTasks = async function (token, gid, ids) {
-  let d1 = new Date()
-  let d2 = new Date(d1)
+  const d1 = new Date()
+  const d2 = new Date(d1)
   let lookedAt = 0
   let callsMade = 0
   let hoursInc = 3
