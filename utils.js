@@ -3,6 +3,10 @@ const github = require('@actions/github')
 const { fetchival } = require('@exodus/fetch')
 const xmlescape = require('xml-escape')
 
+const COMMENT_PAGE_SIZE = 25
+const PULL_REQUEST_PREFIX = 'Linked GitHub PR:'
+const PIN_PULL_REQUEST_COMMENTS = true
+
 const fetch = (token) => {
   return fetchival('https://app.asana.com/api/1.0', {
     headers: {
@@ -48,11 +52,38 @@ module.exports.updatePRBody = async function (workspace, github_token, tasks, pr
   else return octokit.pulls.update(request)
 }
 
+module.exports.getComments = async function (token, taskId, offset) {
+  // prepare pagination
+  const pagination = offset ? `&offset=${offset}` : ''
+  const url = `tasks/${taskId}/stories?limit=${COMMENT_PAGE_SIZE}${pagination}`
+  let res = await fetch(token)(url).get()
+  if (res) return res
+  else return []
+}
+
+module.exports.hasPRComments = async function (token, taskId) {
+  let offset
+  while (true) {
+    const rowsData = await module.exports.getComments(token, taskId, offset)
+    const rows = rowsData.data
+    if (!rows || !rows.length) {
+      break
+    }
+    for (const row of rows) {
+      if (row && row.text && row.text.indexOf(PULL_REQUEST_PREFIX) !== -1) return true
+    }
+    if (!rowsData.next_page) return false
+    offset = rowsData.next_page.offset
+    await timeout(1000)
+  }
+  return false
+}
+
 module.exports.addAsanaComment = async function (token, tasks, comment) {
   if (!tasks || !tasks.length) return
   const data = {
     'data': {
-      'is_pinned': true,
+      'is_pinned': PIN_PULL_REQUEST_COMMENTS,
       'html_text': '<body>' + comment + '</body>'
     }
   }
@@ -112,21 +143,21 @@ module.exports.searchByDate = async function (token, gid, before, after) {
 }
 
 module.exports.getMatchingAsanaTasks = async function (token, gid, ids) {
-  var d1 = new Date()
-  var d2 = new Date(d1)
-  var lookedAt = 0
-  var callsMade = 0
-  var hoursInc = 3
+  let d1 = new Date()
+  let d2 = new Date(d1)
+  let lookedAt = 0
+  let callsMade = 0
+  let hoursInc = 3
   const taskRows = []
   if (!ids || ids.length < 1) {
     return
   }
   while (lookedAt < 10000 && callsMade < 100) {
     d2.setHours(d2.getHours() - hoursInc)
-    let rows = await module.exports.searchByDate(token, gid, d1, d2)
+    const rows = await module.exports.searchByDate(token, gid, d1, d2)
     callsMade++
     lookedAt += rows.length
-    for (var i = 0; i < rows.length; i++) {
+    for (let i = 0; i < rows.length; i++) {
       for (let ii = 0; ii < ids.length; ii++) {
         if (rows[i].gid.toString().endsWith(ids[ii])) {
           taskRows.push(rows[i])
@@ -144,7 +175,13 @@ module.exports.getMatchingAsanaTasks = async function (token, gid, ids) {
 
 module.exports.addGithubPrToAsanaTask = async function (token, tasks, title, url) {
   if (!tasks || !tasks.length) return
-  const comment = '<strong>Linked GitHub PR:</strong> ' + xmlescape(title) + '\n<a href="' + url + '"/>'
+  const tasksToComment = []
+  for (const task of tasks) {
+    const checkCommentInTask = await module.exports.hasPRComments(token, task.gid)
+    if (!checkCommentInTask) tasksToComment.push(task)
+  }
+  if (!tasksToComment.length) return
+  const comment = '<strong>' + PULL_REQUEST_PREFIX + '</strong> ' + xmlescape(title) + '\n<a href="' + url + '"/>'
   await module.exports.addAsanaComment(token, tasks, comment)
 }
 

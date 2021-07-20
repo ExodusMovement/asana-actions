@@ -15,6 +15,7 @@ const run = async () => {
     const isIssue = !!github.context.payload.issue
     const pr = github.context.payload.pull_request || github.context.payload.issue
     const action = github.context.payload.action
+    let tasks
 
     if (!asana_token) {
       throw ({ message: 'ASANA_TOKEN not set' })
@@ -71,7 +72,7 @@ const run = async () => {
       if (pr.body.indexOf(commentPrefix) === -1) {
         core.info('lets fetch the tasks')
 
-        const tasks = await lookupTasks()
+        tasks = await lookupTasks()
         if (!tasks || !tasks.length) return
 
         const response = await utils.updatePRBody(workspace, github_token, tasks, pr, commentPrefix, isIssue)
@@ -79,18 +80,21 @@ const run = async () => {
         if (response.status !== 200) {
           core.error('There was an issue while trying to update the pull-request/issue.')
         } else {
+          // only when opened and asana link not found so we can have the PR link (comment) as soon as the first PR action
+          if (tasks && tasks.length) await utils.addGithubPrToAsanaTask(asana_token, tasks, pr.title, pr.url)
           core.info('Modified PR body with asana link')
         }
+
       } else {
         core.info('Skipping, already found asana link on PR')
       }
 
       if (action === 'opened' && on_open_action) {
-        await doAction(tasks, on_open_action)
+        if (tasks && tasks.length) await doAction(tasks, on_open_action)
       }
 
     } else if (action === 'closed' && (isIssue ? true : pr.merged)) {
-      const tasks = await lookupTasks()
+      tasks = await lookupTasks()
       if (!tasks || !tasks.length) return
 
 
