@@ -24,7 +24,7 @@ const run = async () => {
     core.info(`Running action for ${isIssue ? 'issue' : 'PR'} #${pr.number}: ${pr.title}`)
 
     const lookupTasks = async () => {
-      if (!shortidList.length) {
+      if (!shortidList || !shortidList.length) {
         core.info('No matching asana shorts id in: ' + pr.title)
         return
       } else {
