@@ -9,6 +9,8 @@ When you open a PR put the last 4 or more digits from the task ID in the url of 
 By default no action additional action will be taken when the PR is opened and the task will be closed when the PR is merged.  Use inputs
 `on_open_action` and `on_merge_action` to customize this.  The keyword `CLOSE` is used to close the task, the keyword `MOVE_TO_SECTION <SectionId>` where `<SectionId>` is the gid of the section to target, will move the Asana task to a new section.
 
+You can also merge multiple tasks by separating them with comma using the same format `!1234,3456,7890` e.g `doc: document third party integrations !7212,7213,7214`
+
 To obtain the gid of a section you can use:
 
 ```
@@ -35,7 +37,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Asana Github Link
-      uses: ExodusMovement/asana-actions@2.1.5
+      uses: ExodusMovement/asana-actions@2.1.7
       with:
         asana_token: ${{ secrets.ASANA_TOKEN }}
         workspace: ${{ secrets.ASANA_WORKSPACE_ID }}
