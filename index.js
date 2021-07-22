@@ -28,7 +28,7 @@ const run = async () => {
         core.info('No matching asana shorts id in: ' + pr.title)
         return
       } else {
-        core.info('Searching for short id: ' + shortIds.join(','))
+        core.info('Searching for short id: ' + shortidList.join(','))
       }
 
       const tasks = await utils.getMatchingAsanaTasks(asana_token, workspace, shortidList)
