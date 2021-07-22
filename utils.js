@@ -88,9 +88,9 @@ module.exports.addAsanaComment = async function (token, tasks, comment) {
     }
   }
   try {
-    await Promise.all([...tasks].map(task => {
+    await Promise.all([...tasks].map(task => (
       fetch(token)(`tasks/${task.gid}/stories`).post(data)
-    }))
+    )))
     core.info(`commented on task(s) (${tasks.map(stripTaskIds)})`)
   } catch (exc) {
     core.error(`Error while commenting on task(s) (${tasks.map(stripTaskIds)})`)
@@ -100,13 +100,13 @@ module.exports.addAsanaComment = async function (token, tasks, comment) {
 module.exports.completeAsanaTasks = async function (token, tasks) {
   if (!tasks || !tasks.length) return
   try {
-    await Promise.all([...tasks].map(task => {
+    await Promise.all([...tasks].map(task => (
       fetch(token)(`tasks/${task.gid}`).put({
         'data': {
           'completed': true
         }
       })
-    }))
+    )))
     core.info(`completed task(s) (${tasks.map(stripTaskIds)})`)
   } catch (exc) {
     core.error(`Error while completing task(s) (${tasks.map(stripTaskIds)})`)
@@ -116,13 +116,13 @@ module.exports.completeAsanaTasks = async function (token, tasks) {
 module.exports.moveAsanaTasksToSection = async function (token, tasks, sectionId) {
   if (!tasks || !tasks.length) return
   try {
-    await Promise.all([...tasks].map(task => {
+    await Promise.all([...tasks].map(task => (
       fetch(token)(`sections/${sectionId}/addTask`).post({
         'data': {
           'task': task.gid
         }
       })
-    }))
+    )))
     core.info(`posted task(s) (${tasks.map(stripTaskIds)}) to sections/${sectionId}/addTask`)
   } catch (exc) {
     core.error(`Error while posting task(s) (${tasks.map(stripTaskIds)}) to sections/${sectionId}/addTask`)

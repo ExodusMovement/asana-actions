@@ -81,7 +81,7 @@ const run = async () => {
           core.error('There was an issue while trying to update the pull-request/issue.')
         } else {
           // only when opened and asana link not found so we can have the PR link (comment) as soon as the first PR action
-          if (tasks && tasks.length) await utils.addGithubPrToAsanaTask(asana_token, tasks, pr.title, pr.url)
+          await utils.addGithubPrToAsanaTask(asana_token, tasks, pr.title, pr.url)
           core.info('Modified PR body with asana link')
         }
 
