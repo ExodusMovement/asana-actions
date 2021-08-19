@@ -11,6 +11,7 @@ const run = async () => {
     const workspace = core.getInput('workspace')
     const commentPrefix = core.getInput('comment_prefix') || 'Linked Asana: '
     const on_open_action = core.getInput('on_open_action')
+    const fail_on_no_task = core.getInput('fail_on_no_task')
     const on_merge_action = core.getInput('on_merge_action') || ACTION_CLOSE_PREFIX
     const isIssue = !!github.context.payload.issue
     const pr = github.context.payload.pull_request || github.context.payload.issue
@@ -26,6 +27,9 @@ const run = async () => {
     const lookupTasks = async () => {
       if (!shortidList || !shortidList.length) {
         core.info('No matching asana shorts id in: ' + pr.title)
+        if (fail_on_no_task) {
+          throw ({ message: 'No matching asana shorts id in: ' + pr.title })
+        }
         return
       } else {
         core.info('Searching for short id: ' + shortidList.join(','))
@@ -33,8 +37,14 @@ const run = async () => {
 
       const tasks = await utils.getMatchingAsanaTasks(asana_token, workspace, shortidList)
 
-      if (tasks && tasks.length) core.info('Got matching task: ' + JSON.stringify(tasks))
-      else core.error('Did not find matching task')
+      if (tasks && tasks.length) {
+        core.info('Got matching task: ' + JSON.stringify(tasks))
+      } else {
+        core.error('Did not find matching task')
+        if (fail_on_no_task) {
+          throw ({ message: 'Did not find matching task' })
+        }
+      }
 
       return tasks
     }
@@ -81,7 +91,7 @@ const run = async () => {
           core.error('There was an issue while trying to update the pull-request/issue.')
         } else {
           // only when opened and asana link not found so we can have the PR link (comment) as soon as the first PR action
-          await utils.addGithubPrToAsanaTask(asana_token, tasks, pr.title, pr.url)
+          await utils.addGithubPrToAsanaTask(asana_token, tasks, pr.title, pr.html_url || pr.url)
           core.info('Modified PR body with asana link')
         }
 
