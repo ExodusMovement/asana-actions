@@ -26,9 +26,9 @@ const run = async () => {
 
     const lookupTasks = async () => {
       if (!shortidList || !shortidList.length) {
-        core.info('No matching asana shorts id in: ' + pr.title)
+        core.info('No matching asana short id in: ' + pr.title)
         if (fail_on_no_task) {
-          throw ({ message: 'No matching asana shorts id in: ' + pr.title })
+          throw ({ message: 'No matching asana short id in: ' + pr.title })
         }
         return
       } else {
