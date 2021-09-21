@@ -16,6 +16,9 @@ inputs:
   on_open_action:
     description: 'The action to perform when a PR is opened (CLOSE|MOVE <Section Name>)'
     required: false
+  fail_on_no_task:
+    description: 'Make the action fail if there are no found tasks'
+    required: false
   on_merge_action:
     description: 'The action to perform when a PR is merged (CLOSE|MOVE <Section Name>).  Defaults to CLOSE'
     required: false
