@@ -37,7 +37,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Asana Github Link
-      uses: ExodusMovement/asana-actions@2.1.7
+      uses: ExodusMovement/asana-actions@3.0.0
       with:
         asana_token: ${{ secrets.ASANA_TOKEN }}
         workspace: ${{ secrets.ASANA_WORKSPACE_ID }}
@@ -45,6 +45,8 @@ jobs:
 ```
 
 ## Testing changes
+
+Testing currently requires a live Asana environment to test with, you will need to create your own token for that. If you would like you open a PR adding a mocked test environment we would appreciate it.
 
 - Commit the changes you want to test to a branch
 - Run `npm version patch` to bump the version in package.json (this will also create a commit)
