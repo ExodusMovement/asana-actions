@@ -64,7 +64,7 @@ module.exports.getComments = async function (token, taskId, offset) {
 module.exports.hasPRComments = async function (token, taskId) {
   let offset
   while (true) {
-    const rowsData = await module.exports.getComments(token, taskId, offset)
+    const rowsData = await getComments(token, taskId, offset)
     const rows = rowsData.data
     if (!rows || !rows.length) {
       break
@@ -113,17 +113,27 @@ module.exports.completeAsanaTasks = async function (token, tasks) {
   }
 }
 
-module.exports.moveAsanaTasksToSection = async function (token, tasks, sectionId) {
+module.exports.moveAsanaTasksToSection = async function (token, tasks, projectSectionPairs) {
   if (!tasks || !tasks.length) return
   try {
+    const validSectionIds = [];
     await Promise.all([...tasks].map(task => (
-      fetch(token)(`sections/${sectionId}/addTask`).post({
-        'data': {
-          'task': task.gid
+      projectSectionPairs.map(string => {
+        const [projectId, sectionId] = string.split("/")
+        // check if task is in project
+        const taskInProject = task.projects.some(project => project.gid === projectId);
+        if (taskInProject) {
+          // if task is in project, then move to section
+          validSectionIds.push(sectionId)
+          fetch(token)(`sections/${sectionId}/addTask`).post({
+            'data': {
+              'task': task.gid
+            }
+          })
         }
       })
     )))
-    core.info(`posted task(s) (${tasks.map(stripTaskIds)}) to sections/${sectionId}/addTask`)
+    core.info(`posted task(s) (${tasks.map(stripTaskIds)}) to sections/${validSectionIds}/addTask`)
   } catch (exc) {
     core.error(`Error while posting task(s) (${tasks.map(stripTaskIds)}) to sections/${sectionId}/addTask`)
   }
@@ -131,7 +141,7 @@ module.exports.moveAsanaTasksToSection = async function (token, tasks, sectionId
 
 module.exports.searchByDate = async function (token, gid, before, after) {
   const url = 'workspaces/' + gid + '/tasks/search' +
-    '?opt_fields=gid,name' +
+    '?opt_fields=gid,name,projects' +
     '&modified_at.before=' + before.toISOString() +
     '&modified_at.after=' + after.toISOString() +
     '&limit=100' +
@@ -154,7 +164,7 @@ module.exports.getMatchingAsanaTasks = async function (token, gid, ids) {
   }
   while (lookedAt < 10000 && callsMade < 100) {
     d2.setHours(d2.getHours() - hoursInc)
-    const rows = await module.exports.searchByDate(token, gid, d1, d2)
+    const rows = await searchByDate(token, gid, d1, d2)
     callsMade++
     lookedAt += rows.length
     for (let i = 0; i < rows.length; i++) {
@@ -177,12 +187,12 @@ module.exports.addGithubPrToAsanaTask = async function (token, tasks, title, url
   if (!tasks || !tasks.length) return
   const tasksToComment = []
   for (const task of tasks) {
-    const checkCommentInTask = await module.exports.hasPRComments(token, task.gid)
+    const checkCommentInTask = await hasPRComments(token, task.gid)
     if (!checkCommentInTask) tasksToComment.push(task)
   }
   if (!tasksToComment.length) return
   const comment = '<strong>' + PULL_REQUEST_PREFIX + '</strong> ' + xmlescape(title) + '\n<a href="' + url + '"/>'
-  await module.exports.addAsanaComment(token, tasks, comment)
+  await addAsanaComment(token, tasks, comment)
 }
 
 module.exports.getAsanaShortIds = function getAsanaShortIds(str) {

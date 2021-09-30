@@ -7,7 +7,11 @@ This GitHub Action will link Asana tasks to GitHub Pull Requests. When a PR is m
 When you open a PR put the last 4 or more digits from the task ID in the url of the task from Asana into the PR title in the format `!1234`, for example `fix: handle uncaught exception !7194`. Your PR description will be updated by this action to link to the Asana task. When you merge your PR, the Asana task will be marked as completed.
 
 By default no action additional action will be taken when the PR is opened and the task will be closed when the PR is merged.  Use inputs
-`on_open_action` and `on_merge_action` to customize this.  The keyword `CLOSE` is used to close the task, the keyword `MOVE_TO_SECTION <SectionId>` where `<SectionId>` is the gid of the section to target, will move the Asana task to a new section.
+`on_open_action` and `on_merge_action` to customize this.  The keyword `CLOSE` is used to close the task, the keyword `MOVE_TO_SECTION <ProjectId>/<SectionId>` where
+`<ProjectId>` is the gid of the project the section targetted is in.
+`<SectionId>` is the gid of the section to target, will move the Asana task to a new section.
+
+Multiple pairs can be added. E.g. `<ProjectId>/<SectionId> <ProjectId>/<SectionId>`
 
 You can also merge multiple tasks by separating them with comma using the same format `!1234,3456,7890` e.g `doc: document third party integrations !7212,7213,7214`
 
@@ -55,5 +59,4 @@ Testing currently requires a live Asana environment to test with, you will need 
 - Create a new release on https://github.com/ExodusMovement/asana-actions/releases with the `Tag version` field set to the same semver that you just pushed
 - Finally, open a PR for your branch. It should automatically run your action on that PR
 
-  NB: If you have opened the PR prior to the actions above, edit and save the PR title and it should run the action
-
+NB: If you have opened the PR prior to the actions above, edit and save the PR title and it should run the action

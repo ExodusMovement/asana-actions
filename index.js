@@ -56,11 +56,10 @@ const run = async () => {
     const isMoveAction = (onAction) => {
       return onAction.startsWith(ACTION_MOVE_TO_SECTION_PREFIX)
     }
-
-    const getSectionFromAction = (onAction) => {
+    const getProjectAndSectionFromAction = (onAction) => {
       return onAction
         .substring(ACTION_MOVE_TO_SECTION_PREFIX.length, onAction.length)
-        .trim()
+        .trim().split(' ')
     }
 
     const doAction = async (tasks, onAction) => {
@@ -69,10 +68,10 @@ const run = async () => {
         core.info('Marked linked Asana task(s) as completed')
       }
       if (isMoveAction(onAction)) {
-        const sectionId = getSectionFromAction(onAction)
-        core.info('Moving Asana task(s) to section ' + sectionId)
-        await utils.moveAsanaTasksToSection(asana_token, tasks, sectionId)
-        core.info('Moved linked Asana task(s) to section ' + sectionId)
+        const projectSectionPairs = getProjectAndSectionFromAction(onAction)
+        core.info('Moving Asana task(s) to section ' + projectSectionPairs)
+        await utils.moveAsanaTasksToSection(asana_token, tasks, projectSectionPairs)
+        core.info('Moved linked Asana task(s) to section ' + projectSectionPairs)
       }
     }
 
