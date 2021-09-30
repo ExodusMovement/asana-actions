@@ -64,7 +64,7 @@ module.exports.getComments = async function (token, taskId, offset) {
 module.exports.hasPRComments = async function (token, taskId) {
   let offset
   while (true) {
-    const rowsData = await getComments(token, taskId, offset)
+    const rowsData = await module.exports.getComments(token, taskId, offset)
     const rows = rowsData.data
     if (!rows || !rows.length) {
       break
@@ -164,7 +164,7 @@ module.exports.getMatchingAsanaTasks = async function (token, gid, ids) {
   }
   while (lookedAt < 10000 && callsMade < 100) {
     d2.setHours(d2.getHours() - hoursInc)
-    const rows = await searchByDate(token, gid, d1, d2)
+    const rows = await module.exports.searchByDate(token, gid, d1, d2)
     callsMade++
     lookedAt += rows.length
     for (let i = 0; i < rows.length; i++) {
@@ -187,12 +187,12 @@ module.exports.addGithubPrToAsanaTask = async function (token, tasks, title, url
   if (!tasks || !tasks.length) return
   const tasksToComment = []
   for (const task of tasks) {
-    const checkCommentInTask = await hasPRComments(token, task.gid)
+    const checkCommentInTask = await module.exports.hasPRComments(token, task.gid)
     if (!checkCommentInTask) tasksToComment.push(task)
   }
   if (!tasksToComment.length) return
   const comment = '<strong>' + PULL_REQUEST_PREFIX + '</strong> ' + xmlescape(title) + '\n<a href="' + url + '"/>'
-  await addAsanaComment(token, tasks, comment)
+  await module.exports.addAsanaComment(token, tasks, comment)
 }
 
 module.exports.getAsanaShortIds = function getAsanaShortIds(str) {
