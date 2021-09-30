@@ -49,11 +49,12 @@ jobs:
 Testing currently requires a live Asana environment to test with, you will need to create your own token for that. If you would like you open a PR adding a mocked test environment we would appreciate it.
 
 - Commit the changes you want to test to a branch
-- Run `npm version patch` to bump the version in package.json (this will also create a commit)
+- Update the `version` package.json to a version name like `3.0.0-draft1`
 - Edit `.github/workflows/asana-link.yml` to use your new version
-- Push all the changes to your branch
+- Run `git tag 3.0.0-draft1` and then `git push --tags`
+- Save, commit and push all the changes to your branch
 - Create a new release on https://github.com/ExodusMovement/asana-actions/releases with the `Tag version` field set to the same semver that you just pushed
 - Finally, open a PR for your branch. It should automatically run your action on that PR
 
-  NB: If you have opened the PR prior to the actions above, edit and save the PR title and it should run the action
+Protip: If you have opened the PR prior to the actions above, edit and save the PR title and it should run the action
 
