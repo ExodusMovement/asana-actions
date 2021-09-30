@@ -113,17 +113,27 @@ module.exports.completeAsanaTasks = async function (token, tasks) {
   }
 }
 
-module.exports.moveAsanaTasksToSection = async function (token, tasks, sectionId) {
+module.exports.moveAsanaTasksToSection = async function (token, tasks, projectSectionPairs) {
   if (!tasks || !tasks.length) return
   try {
+    const validSectionIds = [];
     await Promise.all([...tasks].map(task => (
-      fetch(token)(`sections/${sectionId}/addTask`).post({
-        'data': {
-          'task': task.gid
+      projectSectionPairs.map(projectSectionIds => {
+        const [projectId, sectionId] = projectSectionIds.split("/")
+        // check if task is in project
+        const taskInProject = task.projects.some(project => project.gid === projectId);
+        if (taskInProject) {
+          // if task is in project, then move to section
+          validSectionIds.push(sectionId)
+          fetch(token)(`sections/${sectionId}/addTask`).post({
+            'data': {
+              'task': task.gid
+            }
+          })
         }
       })
     )))
-    core.info(`posted task(s) (${tasks.map(stripTaskIds)}) to sections/${sectionId}/addTask`)
+    core.info(`posted task(s) (${tasks.map(stripTaskIds)}) to sections/${validSectionIds}/addTask`)
   } catch (exc) {
     core.error(`Error while posting task(s) (${tasks.map(stripTaskIds)}) to sections/${sectionId}/addTask`)
   }
@@ -131,7 +141,7 @@ module.exports.moveAsanaTasksToSection = async function (token, tasks, sectionId
 
 module.exports.searchByDate = async function (token, gid, before, after) {
   const url = 'workspaces/' + gid + '/tasks/search' +
-    '?opt_fields=gid,name' +
+    '?opt_fields=gid,name,projects' +
     '&modified_at.before=' + before.toISOString() +
     '&modified_at.after=' + after.toISOString() +
     '&limit=100' +
