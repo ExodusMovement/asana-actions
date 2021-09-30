@@ -73,6 +73,7 @@ const run = async () => {
         core.info('Moving Asana task(s) to section ' + sectionId)
         await utils.moveAsanaTasksToSection(asana_token, tasks, sectionId)
         core.info('Moved linked Asana task(s) to section ' + sectionId)
+        await utils.addGithubPrToAsanaTask(asana_token, tasks, pr.title, pr.html_url || pr.url)
       }
     }
 
