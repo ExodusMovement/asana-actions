@@ -67,13 +67,14 @@ const run = async () => {
       if (isCloseAction(onAction)) {
         await utils.completeAsanaTasks(asana_token, tasks)
         core.info('Marked linked Asana task(s) as completed')
+        await utils.addGithubPrToAsanaTask(asana_token, tasks, pr.title, pr.html_url || pr.url)
+        core.info('Post PR link to asana task on completion.')
       }
       if (isMoveAction(onAction)) {
         const sectionId = getSectionFromAction(onAction)
         core.info('Moving Asana task(s) to section ' + sectionId)
         await utils.moveAsanaTasksToSection(asana_token, tasks, sectionId)
         core.info('Moved linked Asana task(s) to section ' + sectionId)
-        await utils.addGithubPrToAsanaTask(asana_token, tasks, pr.title, pr.html_url || pr.url)
       }
     }
 

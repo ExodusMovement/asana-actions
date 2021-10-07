@@ -80,6 +80,7 @@ module.exports.hasPRComments = async function (token, taskId) {
 }
 
 module.exports.addAsanaComment = async function (token, tasks, comment) {
+  core.info(`tasks: ${tasks}, comment: ${comment}`)
   if (!tasks || !tasks.length) return
   const data = {
     'data': {
@@ -87,6 +88,7 @@ module.exports.addAsanaComment = async function (token, tasks, comment) {
       'html_text': '<body>' + comment + '</body>'
     }
   }
+  core.info(`data: ${data}`)
   try {
     await Promise.all([...tasks].map(task => (
       fetch(token)(`tasks/${task.gid}/stories`).post(data)
@@ -174,12 +176,14 @@ module.exports.getMatchingAsanaTasks = async function (token, gid, ids) {
 }
 
 module.exports.addGithubPrToAsanaTask = async function (token, tasks, title, url) {
+  core.info(`tasks in addGithubPrToAsanaTask ${tasks}`)
   if (!tasks || !tasks.length) return
   const tasksToComment = []
   for (const task of tasks) {
     const checkCommentInTask = await module.exports.hasPRComments(token, task.gid)
     if (!checkCommentInTask) tasksToComment.push(task)
   }
+  core.info(`tasksToComment in addGithubPrToAsanaTask ${tasksToComment}`)
   if (!tasksToComment.length) return
   const comment = '<strong>' + PULL_REQUEST_PREFIX + '</strong> ' + xmlescape(title) + '\n<a href="' + url + '"/>'
   await module.exports.addAsanaComment(token, tasks, comment)
