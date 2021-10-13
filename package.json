@@ -1,6 +1,6 @@
 {
   "name": "asana-actions",
-  "version": "3.0.0-test4",
+  "version": "3.1.0",
   "description": "",
   "main": "asana.js",
   "scripts": {
