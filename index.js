@@ -25,17 +25,21 @@ const run = async () => {
     core.info(`Running action for ${isIssue ? 'issue' : 'PR'} #${pr.number}: ${pr.title}`)
 
     const lookupTasks = async () => {
-      if (!shortidList || !shortidList.length) {
-        core.info('No matching asana short id in: ' + pr.title)
+      if (!foundTasks || !foundTasks.length) {
+        core.info('No matching Asana URLs in: ' + pr.title)
         if (fail_on_no_task) {
-          throw ({ message: 'No matching asana short id in: ' + pr.title })
+          throw { message: 'No matching Asana URLs in: ' + pr.title }
         }
         return
-      } else {
-        core.info('Searching for short id: ' + shortidList.join(','))
       }
 
-      const tasks = await utils.getMatchingAsanaTasks(asana_token, workspace, shortidList)
+      core.info('Searching for URLs: ' + foundTasks.join(','))
+
+      const tasks = await utils.getMatchingAsanaTasks(
+        asana_token,
+        workspace,
+        foundTasks,
+      )
 
       if (tasks && tasks.length) {
         core.info('Got matching task: ' + JSON.stringify(tasks))
@@ -77,7 +81,7 @@ const run = async () => {
       }
     }
 
-    const shortidList = utils.getAsanaShortIds(pr.title)
+    const foundTasks = utils.getAsanaTasksByPRBody(pr)
 
     if (action === 'opened' || action === 'edited') {
       if (pr.body.indexOf(commentPrefix) === -1) {

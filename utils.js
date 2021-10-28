@@ -6,6 +6,7 @@ const xmlescape = require('xml-escape')
 const COMMENT_PAGE_SIZE = 25
 const PULL_REQUEST_PREFIX = 'Linked GitHub PR:'
 const PIN_PULL_REQUEST_COMMENTS = true
+const ASANA_LINK_PREFIX = 'closes:'
 
 const fetch = (token) => {
   return fetchival('https://app.asana.com/api/1.0', {
@@ -33,10 +34,12 @@ module.exports.updatePRBody = async function (workspace, github_token, tasks, pr
   const multiTasks = tasks.length > 1
   const linkBody = tasks.reduce((links, task, idx) => {
     if (idx === 0) {
-      links = `This PR is linked to${multiTasks ? ' these Asana tasks: ' : ''}`
+      links = `${multiTasks ? 'These Asana tasks: ' : 'This Asana task'}`
     }
     links = `${links} ${multiTasks && idx === tasks.length - 1 ? ' & ' : ''}`
-    links = `${links} [${multiTasks ? idx + 1 + '' : 'this Asana task'}.](https://app.asana.com/0/${workspace}/${task.gid})`
+    links = `${links} [${
+      multiTasks ? idx + 1 + '' : 'this Asana task'
+    }.](https://app.asana.com/0/${workspace}/${task.gid})`
     return links
   }, '')
   const newBody = pr.body += '\n\n' + commentPrefix + linkBody
@@ -154,14 +157,15 @@ module.exports.searchByDate = async function (token, gid, before, after) {
   else return []
 }
 
-module.exports.getMatchingAsanaTasks = async function (token, gid, ids) {
+module.exports.getMatchingAsanaTasks = async function (token, gid, taskUrls) {
+  const taskIds = taskUrls.map((url) => url.substring(str.lastIndexOf('/') + 1))
   const d1 = new Date()
   const d2 = new Date(d1)
   let lookedAt = 0
   let callsMade = 0
   let hoursInc = 3
   const taskRows = []
-  if (!ids || ids.length < 1) {
+  if (!taskIds || taskIds.length < 1) {
     return
   }
   while (lookedAt < 10000 && callsMade < 100) {
@@ -170,8 +174,8 @@ module.exports.getMatchingAsanaTasks = async function (token, gid, ids) {
     callsMade++
     lookedAt += rows.length
     for (let i = 0; i < rows.length; i++) {
-      for (let ii = 0; ii < ids.length; ii++) {
-        if (rows[i].gid.toString().endsWith(ids[ii])) {
+      for (let ii = 0; ii < taskIds.length; ii++) {
+        if (rows[i].gid.toString().endsWith(taskIds[ii])) {
           taskRows.push(rows[i])
           if (taskRows.length === ids.length) {
             return taskRows
@@ -199,10 +203,22 @@ module.exports.addGithubPrToAsanaTask = async function (token, tasks, title, url
   await module.exports.addAsanaComment(token, tasks, comment)
 }
 
-module.exports.getAsanaShortIds = function getAsanaShortIds(str) {
-  if (!str) return null
-  const match = /!([0-9]{4,10})+(?:,[0-9]{4,10})*/.exec(str)
-  if (match) return shortIdList(match[0])
+module.exports.getAsanaTasksByPRBody = function ({ body }) {
+  if (!body) return null
+
+  body = body.replaceAll(' ', '') // raw body
+  if (!/closes:/i.test(body)) return null // URLs not even present, halt
+
+  const lines = body.split('\n')
+  while (lines.length > 0) {
+    const line = lines.shift()
+    if (line.trim().toLowerCase().startsWith(ASANA_LINK_PREFIX)) {
+      const matches = line.match(
+        /https:\/\/app.asana.com\/[0-9]\/[0-9]*\/[0-9]*/g,
+      )
+      return matches
+    }
+  }
 }
 
 // module.exports.addAsanaTaskToGithubPr = async function (githubData, asanaData, replacementGithubator) {
