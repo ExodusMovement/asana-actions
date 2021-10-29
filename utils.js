@@ -206,7 +206,8 @@ module.exports.addGithubPrToAsanaTask = async function (token, tasks, title, url
 module.exports.getAsanaTasksByPRBody = function ({ body }) {
   if (!body) return null
 
-  body = body.replaceAll(' ', '') // raw body
+  console.log({ body, typeof: typeof body })
+  body = body.replace(/ /g, '') // raw body
   if (!/closes:/i.test(body)) return null // URLs not even present, halt
 
   const lines = body.split('\n')
