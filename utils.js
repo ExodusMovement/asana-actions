@@ -1,20 +1,11 @@
 const core = require('@actions/core')
 const github = require('@actions/github')
-const { fetchival } = require('@exodus/fetch')
 const xmlescape = require('xml-escape')
+const fetch = require('./fetch')
 
 const COMMENT_PAGE_SIZE = 25
 const PULL_REQUEST_PREFIX = 'Linked GitHub PR:'
 const PIN_PULL_REQUEST_COMMENTS = true
-
-const fetch = (token) => {
-  return fetchival('https://app.asana.com/api/1.0', {
-    headers: {
-      Authorization: 'Bearer ' + token,
-      'content-type': 'application/json',
-    },
-  })
-}
 
 function timeout(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms))
