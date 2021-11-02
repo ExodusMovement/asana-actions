@@ -22,5 +22,8 @@
     "@actions/github": "^4.0.0",
     "@exodus/fetch": "^1.2.0",
     "xml-escape": "^1.1.0"
+  },
+  "devDependencies": {
+    "prettier": "^2.4.1"
   }
 }
