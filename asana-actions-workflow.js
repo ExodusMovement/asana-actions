@@ -1,9 +1,10 @@
-const utils = require('./utils')
+const createUtils = require('./utils')
 
 const ACTION_CLOSE_PREFIX = 'CLOSE'
 const ACTION_MOVE_TO_SECTION_PREFIX = 'MOVE_TO_SECTION'
 
 module.exports = async (core, github) => {
+  const utils = createUtils(core, github)
   const github_token = core.getInput('github_token')
   const asana_token = core.getInput('asana_token')
   const workspace = core.getInput('workspace')
