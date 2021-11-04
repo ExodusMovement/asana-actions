@@ -80,7 +80,7 @@ const run = async () => {
     const shortidList = utils.getAsanaShortIds(pr.title)
 
     if (action === 'opened' || action === 'edited') {
-      if (pr.body.indexOf(commentPrefix) === -1) {
+      if (!pr.body || pr.body.indexOf(commentPrefix) === -1) {
         core.info('lets fetch the tasks')
 
         tasks = await lookupTasks()
