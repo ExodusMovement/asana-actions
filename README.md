@@ -51,7 +51,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Asana Github Link
-      uses: ExodusMovement/asana-actions@3.2.0
+      uses: ExodusMovement/asana-actions@3.2.1
       with:
         asana_token: ${{ secrets.ASANA_TOKEN }}
         workspace: ${{ secrets.ASANA_WORKSPACE_ID }}
