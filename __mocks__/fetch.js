@@ -46,16 +46,7 @@ const fetch = (token) => (url) => ({
         throw new Error(`unknown url ${url}`)
     }
   },
-  post: async (data) => {
-    switch (true) {
-      case /workspaces/.test(url):
-        return getWorkspaces(url)
-      case /tasks/.test(url):
-        return postTasks(url, data)
-      default:
-        throw new Error(`unknown url ${url}`)
-    }
-  },
+  post: async (data) => postTasks(url, data),
 })
 
 module.exports = fetch
