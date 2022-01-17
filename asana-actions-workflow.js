@@ -95,7 +95,7 @@ module.exports = async (core, github) => {
 
   const shortidList = utils.getAsanaShortIds(pr.title)
   if (action === 'opened' || action === 'edited') {
-    if (pr.body.indexOf(commentPrefix) === -1) {
+    if (!pr.body || pr.body.indexOf(commentPrefix) === -1) {
       tasks = await lookupTasks(shortidList)
       if (!tasks || !tasks.length) return
 
