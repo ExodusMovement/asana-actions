@@ -33,11 +33,19 @@ const createGithub = (number) => {
 }
 
 describe('Asana Actions Workflow', () => {
-  it('Should link Open PR with Asana task', async () => {
+  it('Should link open PR with Asana task', async () => {
     await createAsanaActionsWorkflow(core, createGithub(100))
   })
 
   it('Should complete Asana task', async () => {
     await createAsanaActionsWorkflow(core, createGithub(1235))
+  })
+
+  it('Should link edited PR with Asana task', async () => {
+    await createAsanaActionsWorkflow(core, createGithub(1236))
+  })
+
+  it('Should do nothing if PR is already linked', async () => {
+    await createAsanaActionsWorkflow(core, createGithub(1237))
   })
 })
