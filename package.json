@@ -4,7 +4,7 @@
   "description": "",
   "main": "asana.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "yarn run jest"
   },
   "repository": {
     "type": "git",
@@ -24,6 +24,7 @@
     "xml-escape": "^1.1.0"
   },
   "devDependencies": {
+    "jest": "^27.4.5",
     "prettier": "^2.4.1"
   }
 }

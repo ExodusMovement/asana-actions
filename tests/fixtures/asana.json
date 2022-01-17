@@ -1,0 +1,12 @@
+[
+  {
+    "gid": "1234",
+    "modifiedAt": "2022-01-17T16:20:59.135Z",
+    "comments": [{ "text": "Dummy comment" }],
+    "newComment": "<strong>Linked GitHub PR:</strong> feat: dummy PR !1234\n<a href=\"https://github.com/ExodusMovement/exodus-mobile/pull/1234\"/>"
+  },
+  {
+    "gid": "1235",
+    "modifiedAt": "2022-01-01T00:00:000.0Z"
+  }
+]

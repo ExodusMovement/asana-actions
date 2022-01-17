@@ -35,8 +35,56 @@ async function addAsanaComment(core, token, tasks, comment) {
     )
     core.info(`commented on task(s) (${tasks.map(stripTaskIds)})`)
   } catch (exc) {
+    if (process.env.NODE_ENV === 'test') {
+      throw exc
+    }
     core.error(`Error while commenting on task(s) (${tasks.map(stripTaskIds)})`)
   }
+}
+
+async function searchByDate(core, token, gid, before, after) {
+  const url =
+    'workspaces/' +
+    gid +
+    '/tasks/search' +
+    '?opt_fields=gid,name,projects' +
+    '&modified_at.before=' +
+    before.toISOString() +
+    '&modified_at.after=' +
+    after.toISOString() +
+    '&limit=100' +
+    '&sort_by=modified_at'
+  let res = await fetch(token)(url).get()
+  if (res && res.data) return res.data
+  else return []
+}
+
+async function getComments(token, taskId, offset) {
+  // prepare pagination
+  const pagination = offset ? `&offset=${offset}` : ''
+  const url = `tasks/${taskId}/stories?limit=${COMMENT_PAGE_SIZE}${pagination}`
+  let res = await fetch(token)(url).get()
+  if (res) return res
+  else return []
+}
+
+async function hasPRComments(token, taskId) {
+  let offset
+  while (true) {
+    const rowsData = await getComments(token, taskId, offset)
+    const rows = rowsData.data
+    if (!rows || !rows.length) {
+      break
+    }
+    for (const row of rows) {
+      if (row && row.text && row.text.indexOf(PULL_REQUEST_PREFIX) !== -1)
+        return true
+    }
+    if (!rowsData.next_page) return false
+    offset = rowsData.next_page.offset
+    await timeout(1000)
+  }
+  return false
 }
 
 const utils = (core, github) => ({
@@ -73,34 +121,6 @@ const utils = (core, github) => ({
     const octokit = github.getOctokit(github_token)
     if (isIssue) return octokit.issues.update(request)
     else return octokit.pulls.update(request)
-  },
-
-  getComments: async (token, taskId, offset) => {
-    // prepare pagination
-    const pagination = offset ? `&offset=${offset}` : ''
-    const url = `tasks/${taskId}/stories?limit=${COMMENT_PAGE_SIZE}${pagination}`
-    let res = await fetch(token)(url).get()
-    if (res) return res
-    else return []
-  },
-
-  hasPRComments: async (token, taskId) => {
-    let offset
-    while (true) {
-      const rowsData = await module.exports.getComments(token, taskId, offset)
-      const rows = rowsData.data
-      if (!rows || !rows.length) {
-        break
-      }
-      for (const row of rows) {
-        if (row && row.text && row.text.indexOf(PULL_REQUEST_PREFIX) !== -1)
-          return true
-      }
-      if (!rowsData.next_page) return false
-      offset = rowsData.next_page.offset
-      await timeout(1000)
-    }
-    return false
   },
 
   completeAsanaTasks: async (token, tasks) => {
@@ -159,24 +179,6 @@ const utils = (core, github) => ({
     }
   },
 
-  searchByDate: async (token, gid, before, after) => {
-    const url =
-      'workspaces/' +
-      gid +
-      '/tasks/search' +
-      '?opt_fields=gid,name,projects' +
-      '&modified_at.before=' +
-      before.toISOString() +
-      '&modified_at.after=' +
-      after.toISOString() +
-      '&limit=100' +
-      '&sort_by=modified_at'
-    core.info('fetching ' + url)
-    let res = await fetch(token)(url).get()
-    if (res && res.data) return res.data
-    else return []
-  },
-
   getMatchingAsanaTasks: async (token, gid, ids) => {
     const d1 = new Date()
     const d2 = new Date(d1)
@@ -189,7 +191,7 @@ const utils = (core, github) => ({
     }
     while (lookedAt < 10000 && callsMade < 100) {
       d2.setHours(d2.getHours() - hoursInc)
-      const rows = await module.exports.searchByDate(token, gid, d1, d2)
+      const rows = await searchByDate(core, token, gid, d1, d2)
       callsMade++
       lookedAt += rows.length
       for (let i = 0; i < rows.length; i++) {
@@ -213,10 +215,7 @@ const utils = (core, github) => ({
     if (!tasks || !tasks.length) return
     const tasksToComment = []
     for (const task of tasks) {
-      const checkCommentInTask = await module.exports.hasPRComments(
-        token,
-        task.gid,
-      )
+      const checkCommentInTask = await hasPRComments(token, task.gid)
       if (!checkCommentInTask) tasksToComment.push(task)
     }
     core.info(`tasksToComment in addGithubPrToAsanaTask ${tasksToComment}`)
