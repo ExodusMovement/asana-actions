@@ -33,8 +33,12 @@ const createGithub = (number) => {
 }
 
 describe('Asana Actions Workflow', () => {
+  it('Should do nothing if no Asana ID present in PR', async () => {
+    await createAsanaActionsWorkflow(core, createGithub(1230))
+  })
+
   it('Should link open PR with Asana task', async () => {
-    await createAsanaActionsWorkflow(core, createGithub(100))
+    await createAsanaActionsWorkflow(core, createGithub(1234))
   })
 
   it('Should complete Asana task', async () => {
