@@ -35,6 +35,11 @@ const postTasks = (url, { data }) => {
   )
 }
 
+const putTask = (url, { data }) => {
+  const task = getTaskFromURL(url)
+  expect(task.completed).toEqual(data.completed)
+}
+
 const fetch = (token) => (url) => ({
   get: async () => {
     switch (true) {
@@ -47,6 +52,7 @@ const fetch = (token) => (url) => ({
     }
   },
   post: async (data) => postTasks(url, data),
+  put: async (data) => putTask(url, data),
 })
 
 module.exports = fetch

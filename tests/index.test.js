@@ -32,9 +32,12 @@ const createGithub = (number) => {
   }
 }
 
-test('Asana Actions Workflow', async () => {
-  // it('Pull request with one asana link in body', async () => {
-  await createAsanaActionsWorkflow(core, createGithub(100))
-  expect(true).toBe(true)
-  // })
+describe('Asana Actions Workflow', () => {
+  it('Should link Open PR with Asana task', async () => {
+    await createAsanaActionsWorkflow(core, createGithub(100))
+  })
+
+  it('Should complete Asana task', async () => {
+    await createAsanaActionsWorkflow(core, createGithub(1235))
+  })
 })
