@@ -42,7 +42,7 @@ async function addAsanaComment(core, token, tasks, comment) {
   }
 }
 
-async function searchByDate(core, token, gid, before, after) {
+async function searchByDate(token, gid, before, after) {
   const url =
     'workspaces/' +
     gid +
@@ -54,9 +54,8 @@ async function searchByDate(core, token, gid, before, after) {
     after.toISOString() +
     '&limit=100' +
     '&sort_by=modified_at'
-  let res = await fetch(token)(url).get()
-  if (res && res.data) return res.data
-  else return []
+  const res = await fetch(token)(url).get()
+  return res?.data ?? []
 }
 
 async function getComments(token, taskId, offset) {
@@ -87,16 +86,8 @@ async function hasPRComments(token, taskId) {
   return false
 }
 
-const utils = (core, github) => ({
-  updatePRBody: async (
-    workspace,
-    github_token,
-    tasks,
-    pr,
-    commentPrefix,
-    isIssue,
-  ) => {
-    if (!tasks || !tasks.length) return
+const utils = (core, github) => {
+  const getNewPRBody = (body, tasks, commentPrefix) => {
     const multiTasks = tasks.length > 1
     const linkBody = tasks.reduce((links, task, idx) => {
       if (idx === 0) {
@@ -105,12 +96,24 @@ const utils = (core, github) => ({
         }`
       }
       links = `${links} ${multiTasks && idx === tasks.length - 1 ? ' & ' : ''}`
-      links = `${links} [${
-        multiTasks ? idx + 1 + '' : 'this Asana task'
-      }.](https://app.asana.com/0/${workspace}/${task.gid})`
+      links = `${links} [${multiTasks ? idx + 1 + '' : 'this Asana task'}.](${
+        task.permalink_url
+      })`
       return links
     }, '')
-    const newBody = (pr.body += '\n\n' + commentPrefix + linkBody)
+    return (body += '\n\n' + commentPrefix + linkBody)
+  }
+
+  const updatePRBody = async (
+    workspace,
+    github_token,
+    tasks,
+    pr,
+    commentPrefix,
+    isIssue,
+  ) => {
+    if (!tasks || !tasks.length) return
+    const newBody = getNewPRBody(pr.body, tasks, commentPrefix)
     const request = {
       body: newBody,
       owner: github.context.repo.owner,
@@ -121,9 +124,9 @@ const utils = (core, github) => ({
     const octokit = github.getOctokit(github_token)
     if (isIssue) return octokit.issues.update(request)
     else return octokit.pulls.update(request)
-  },
+  }
 
-  completeAsanaTasks: async (token, tasks) => {
+  const completeAsanaTasks = async (token, tasks) => {
     if (!tasks || !tasks.length) return
     try {
       await Promise.all(
@@ -139,9 +142,9 @@ const utils = (core, github) => ({
     } catch (exc) {
       core.error(`Error while completing task(s) (${tasks.map(stripTaskIds)})`)
     }
-  },
+  }
 
-  moveAsanaTasksToSection: async (token, tasks, projectSectionPairs) => {
+  const moveAsanaTasksToSection = async (token, tasks, projectSectionPairs) => {
     if (!tasks || !tasks.length) return
     try {
       const validSectionIds = []
@@ -177,40 +180,18 @@ const utils = (core, github) => ({
         )}) to sections/${sectionId}/addTask`,
       )
     }
-  },
+  }
 
-  getMatchingAsanaTasks: async (token, gid, ids) => {
-    const d1 = new Date()
-    const d2 = new Date(d1)
-    let lookedAt = 0
-    let callsMade = 0
-    let hoursInc = 3
-    const taskRows = []
-    if (!ids || ids.length < 1) {
-      return
-    }
-    while (lookedAt < 10000 && callsMade < 100) {
-      d2.setHours(d2.getHours() - hoursInc)
-      const rows = await searchByDate(core, token, gid, d1, d2)
-      callsMade++
-      lookedAt += rows.length
-      for (let i = 0; i < rows.length; i++) {
-        for (let ii = 0; ii < ids.length; ii++) {
-          if (rows[i].gid.toString().endsWith(ids[ii])) {
-            taskRows.push(rows[i])
-            if (taskRows.length === ids.length) {
-              return taskRows
-            }
-          }
-        }
-      }
-      d1.setHours(d1.getHours() - hoursInc)
-      await timeout(1000)
-    }
-    return null
-  },
+  const getMatchingAsanaTasks = async (token, ids) => {
+    return Promise.all(
+      ids.map(async (taskId) => {
+        const resp = await fetch(token)(`tasks/${taskId}`).get()
+        return resp.data
+      }),
+    )
+  }
 
-  addGithubPrToAsanaTask: async (token, tasks, title, url) => {
+  const addGithubPrToAsanaTask = async (token, tasks, title, url) => {
     core.info(`tasks in addGithubPrToAsanaTask ${tasks}`)
     if (!tasks || !tasks.length) return
     const tasksToComment = []
@@ -229,13 +210,38 @@ const utils = (core, github) => ({
       url +
       '"/>'
     await addAsanaComment(core, token, tasks, comment)
-  },
+  }
 
-  getAsanaShortIds: (str) => {
-    if (!str) return null
-    const match = /!([0-9]{4,10})+(?:,[0-9]{4,10})*/.exec(str)
-    if (match) return shortIdList(match[0])
-  },
-})
+  const getAsanaShortIds = (body) => {
+    if (!body) return null
+
+    body = body.replace(/ /g, '') // raw body
+    if (!/closes:/i.test(body)) return null // URLs not even present, halt
+
+    const lines = body.split('\n')
+    while (lines.length > 0) {
+      const line = lines.shift()
+      if (line.trim().toLowerCase().startsWith(ASANA_LINK_PREFIX)) {
+        const resp = []
+        let matches
+        const reg = RegExp('https://app.asana.com/[0-9]/[0-9]*/[0-9]*', 'g')
+        while ((matches = reg.exec(line)) !== null) {
+          resp.push(...matches[0].split('/').slice(-1))
+        }
+        return resp
+      }
+    }
+  }
+
+  return {
+    getNewPRBody,
+    updatePRBody,
+    completeAsanaTasks,
+    moveAsanaTasksToSection,
+    getMatchingAsanaTasks,
+    addGithubPrToAsanaTask,
+    getAsanaShortIds,
+  }
+}
 
 module.exports = utils

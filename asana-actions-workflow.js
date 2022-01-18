@@ -4,7 +4,6 @@ const ACTION_CLOSE_PREFIX = 'CLOSE'
 const ACTION_MOVE_TO_SECTION_PREFIX = 'MOVE_TO_SECTION'
 
 module.exports = async (core, github) => {
-  const utils = createUtils(core, github)
   const github_token = core.getInput('github_token')
   const asana_token = core.getInput('asana_token')
   const workspace = core.getInput('workspace')
@@ -13,6 +12,7 @@ module.exports = async (core, github) => {
   const fail_on_no_task = core.getInput('fail_on_no_task')
   const on_merge_action =
     core.getInput('on_merge_action') || ACTION_CLOSE_PREFIX
+  const utils = createUtils(core, github, asana_token)
   const isIssue = !!github.context.payload.issue
   const pr = github.context.payload.pull_request || github.context.payload.issue
   const action = github.context.payload.action
@@ -37,13 +37,9 @@ module.exports = async (core, github) => {
       core.info('Searching for short id: ' + shortidList.join(','))
     }
 
-    const tasks = await utils.getMatchingAsanaTasks(
-      asana_token,
-      workspace,
-      shortidList,
-    )
+    const tasks = await utils.getMatchingAsanaTasks(asana_token, shortidList)
 
-    if (tasks && tasks.length) {
+    if (tasks?.length > 0) {
       core.info('Got matching task: ' + JSON.stringify(tasks))
     } else {
       core.error('Did not find matching task')
@@ -93,7 +89,7 @@ module.exports = async (core, github) => {
     }
   }
 
-  const shortidList = utils.getAsanaShortIds(pr.title)
+  const shortidList = utils.getAsanaShortIds(pr.body)
   if (action === 'opened' || action === 'edited') {
     if (!pr.body || pr.body.indexOf(commentPrefix) === -1) {
       tasks = await lookupTasks(shortidList)
