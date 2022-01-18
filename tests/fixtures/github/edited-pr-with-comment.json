@@ -3,10 +3,10 @@
     "payload": {
       "issue": false,
       "pull_request": {
-        "title": "feat: dummy PR edited !1237",
+        "title": "feat: dummy PR edited",
         "number": 1237,
         "url": "https://github.com/ExodusMovement/exodus-mobile/pull/1237",
-        "body": "## Summary\n\nLinked Asana: This PR is linked to  [this Asana task.](https://app.asana.com/0/exodus_0/1237)",
+        "body": "## Summary\n\ncloses: [this Asana task](https://app.asana.com/0/120000000/1237).",
         "merged": false
       },
       "action": "edited"

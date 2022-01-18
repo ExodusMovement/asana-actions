@@ -6,7 +6,7 @@
         "title": "feat: dummy PR",
         "number": 1230,
         "url": "https://github.com/ExodusMovement/exodus-mobile/pull/1230",
-        "body": "## Summary",
+        "body": "## Summary\nFoooo",
         "merged": false
       },
       "action": "opened"

@@ -1,30 +1,21 @@
 const fixture = require('../tests/fixtures/asana.json')
 
-const getWorkspaces = (url) => {
-  const params = new URLSearchParams(url)
-  const modifiedAtBefore = params.get('modified_at.before')
-  const modifiedAtAfter = params.get('modified_at.after')
-
-  const data = fixture.filter(
-    (task) =>
-      new Date(task.modifiedAt) >= new Date(modifiedAtAfter) &&
-      new Date(task.modifiedAt) <= new Date(modifiedAtBefore),
-  )
-
-  return {
-    data,
-  }
-}
-
 const getTaskFromURL = (url) => {
   const taskId = /[0-9]+/.exec(url)[0]
   return fixture.find((t) => t.gid === taskId)
 }
 
-const getTasks = (url) => {
+const getTaskComments = (url) => {
   const task = getTaskFromURL(url)
   return {
     data: task.comments ?? [],
+  }
+}
+
+const getTasks = (url) => {
+  const task = getTaskFromURL(url)
+  return {
+    data: task,
   }
 }
 
@@ -43,8 +34,8 @@ const putTask = (url, { data }) => {
 const fetch = (token) => (url) => ({
   get: async () => {
     switch (true) {
-      case /workspaces/.test(url):
-        return getWorkspaces(url)
+      case /stories/.test(url):
+        return getTaskComments(url)
       case /tasks/.test(url):
         return getTasks(url)
       default:

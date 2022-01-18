@@ -42,22 +42,6 @@ async function addAsanaComment(core, token, tasks, comment) {
   }
 }
 
-async function searchByDate(token, gid, before, after) {
-  const url =
-    'workspaces/' +
-    gid +
-    '/tasks/search' +
-    '?opt_fields=gid,name,projects' +
-    '&modified_at.before=' +
-    before.toISOString() +
-    '&modified_at.after=' +
-    after.toISOString() +
-    '&limit=100' +
-    '&sort_by=modified_at'
-  const res = await fetch(token)(url).get()
-  return res?.data ?? []
-}
-
 async function getComments(token, taskId, offset) {
   // prepare pagination
   const pagination = offset ? `&offset=${offset}` : ''
@@ -234,7 +218,9 @@ const utils = (core, github) => {
     const lines = body.split('\n')
     while (lines.length > 0) {
       const line = lines.shift()
-      if (line.trim().toLowerCase().startsWith(commentPrefix)) {
+      if (
+        line.trim().toLowerCase().startsWith(commentPrefix.trim().toLowerCase())
+      ) {
         const resp = []
         let matches
         const reg = RegExp('https://app.asana.com/[0-9]/[0-9]*/[0-9]*', 'g')
@@ -244,6 +230,7 @@ const utils = (core, github) => {
         return resp
       }
     }
+    return []
   }
 
   return {
