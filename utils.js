@@ -90,22 +90,36 @@ const utils = (core, github) => {
   const getNewPRBody = (body, tasks, commentPrefix) => {
     const multiTasks = tasks.length > 1
     const linkBody = tasks.reduce((links, task, idx) => {
-      if (idx === 0) {
-        links = `This PR is linked to${
-          multiTasks ? ' these Asana tasks: ' : ''
-        }`
+      links = `${links}[this Asana task](${task.permalink_url})`
+      if (multiTasks && idx !== tasks.length - 1) {
+        links += ' & '
       }
-      links = `${links} ${multiTasks && idx === tasks.length - 1 ? ' & ' : ''}`
-      links = `${links} [${multiTasks ? idx + 1 + '' : 'this Asana task'}.](${
-        task.permalink_url
-      })`
+      if (idx === tasks.length - 1) {
+        // Add the dot at the end of the line.
+        links += '.'
+      }
       return links
-    }, '')
-    return (body += '\n\n' + commentPrefix + linkBody)
+    }, commentPrefix || '')
+    const lines = body.split('\n')
+    let newBody = ''
+    while (lines.length > 0) {
+      const line = lines.shift()
+      if (
+        line.trim().toLowerCase().startsWith(commentPrefix.trim().toLowerCase())
+      ) {
+        newBody += linkBody
+      } else {
+        newBody += line
+      }
+      if (lines.length > 0) {
+        // Only add the break if it's not the last line.
+        newBody += '\n'
+      }
+    }
+    return newBody
   }
 
   const updatePRBody = async (
-    workspace,
     github_token,
     tasks,
     pr,
@@ -212,16 +226,15 @@ const utils = (core, github) => {
     await addAsanaComment(core, token, tasks, comment)
   }
 
-  const getAsanaShortIds = (body) => {
+  const getAsanaShortIds = (body, commentPrefix) => {
     if (!body) return null
 
     body = body.replace(/ /g, '') // raw body
-    if (!/closes:/i.test(body)) return null // URLs not even present, halt
 
     const lines = body.split('\n')
     while (lines.length > 0) {
       const line = lines.shift()
-      if (line.trim().toLowerCase().startsWith(ASANA_LINK_PREFIX)) {
+      if (line.trim().toLowerCase().startsWith(commentPrefix)) {
         const resp = []
         let matches
         const reg = RegExp('https://app.asana.com/[0-9]/[0-9]*/[0-9]*', 'g')

@@ -7,7 +7,7 @@ module.exports = async (core, github) => {
   const github_token = core.getInput('github_token')
   const asana_token = core.getInput('asana_token')
   const workspace = core.getInput('workspace')
-  const commentPrefix = core.getInput('comment_prefix') || 'Linked Asana: '
+  const commentPrefix = core.getInput('comment_prefix') || 'closes:'
   const on_open_action = core.getInput('on_open_action')
   const fail_on_no_task = core.getInput('fail_on_no_task')
   const on_merge_action =
@@ -89,14 +89,13 @@ module.exports = async (core, github) => {
     }
   }
 
-  const shortidList = utils.getAsanaShortIds(pr.body)
+  const shortidList = utils.getAsanaShortIds(pr.body, commentPrefix)
   if (action === 'opened' || action === 'edited') {
     if (!pr.body || pr.body.indexOf(commentPrefix) === -1) {
       tasks = await lookupTasks(shortidList)
       if (!tasks || !tasks.length) return
 
       const response = await utils.updatePRBody(
-        workspace,
         github_token,
         tasks,
         pr,
