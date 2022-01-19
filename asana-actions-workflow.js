@@ -6,17 +6,17 @@ const ACTION_MOVE_TO_SECTION_PREFIX = 'MOVE_TO_SECTION'
 module.exports = async (core, github) => {
   const github_token = core.getInput('github_token')
   const asana_token = core.getInput('asana_token')
-  const workspace = core.getInput('workspace')
   const commentPrefix = core.getInput('comment_prefix') || 'closes: '
   const on_open_action = core.getInput('on_open_action')
   const fail_on_no_task = core.getInput('fail_on_no_task')
   const on_merge_action =
     core.getInput('on_merge_action') || ACTION_CLOSE_PREFIX
+
   const utils = createUtils(core, github, asana_token)
+
   const isIssue = !!github.context.payload.issue
   const pr = github.context.payload.pull_request || github.context.payload.issue
   const action = github.context.payload.action
-  let tasks
 
   if (!asana_token) {
     throw { message: 'ASANA_TOKEN not set' }
@@ -94,6 +94,7 @@ module.exports = async (core, github) => {
     return
   }
   const shortidList = utils.getAsanaShortIds(pr.body, commentPrefix)
+  let tasks
   if (action === 'opened' || action === 'edited') {
     tasks = await lookupTasks(shortidList)
     if (!tasks || !tasks.length) return
@@ -122,7 +123,7 @@ module.exports = async (core, github) => {
     }
 
     if (action === 'opened' && on_open_action) {
-      if (tasks && tasks.length) await doAction(tasks, on_open_action)
+      await doAction(tasks, on_open_action)
     }
   } else if (action === 'closed' && (isIssue || pr.merged)) {
     tasks = await lookupTasks(shortidList)
