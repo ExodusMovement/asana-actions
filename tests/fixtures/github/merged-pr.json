@@ -6,7 +6,7 @@
         "title": "feat: dummy PR2",
         "number": 1235,
         "url": "https://github.com/ExodusMovement/exodus-mobile/pull/1235",
-        "body": "## Summary\ncloses: [this Asana task](https://app.asana.com/0/120000000/1235).",
+        "body": "## Summary\nCloses: [this Asana task](https://app.asana.com/0/120000000/1235).",
         "merged": true
       },
       "action": "closed"
@@ -17,7 +17,7 @@
     }
   },
   "newBody": {
-    "body": "## Summary\ncloses: [this Asana task](https://app.asana.com/0/120000000/1235).",
+    "body": "## Summary\nCloses: [this Asana task](https://app.asana.com/0/120000000/1235).",
     "owner": "Someone",
     "pull_number": 1235,
     "repo": "exodus-mobile"

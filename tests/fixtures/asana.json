@@ -36,5 +36,15 @@
       }
     ],
     "permalink_url": "https://app.asana.com/0/120000000/1237"
+  },
+  {
+    "gid": "1239",
+    "modifiedAt": "2022-01-17T16:22:59.135Z",
+    "comments": [
+      {
+        "text": "<strong>Linked GitHub PR:</strong> feat: dummy PR with Fixes prefix\n<a href=\"https://github.com/ExodusMovement/exodus-mobile/pull/1239\"/>"
+      }
+    ],
+    "permalink_url": "https://app.asana.com/0/120000000/1239"
   }
 ]

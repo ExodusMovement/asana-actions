@@ -13,6 +13,10 @@ function stripTaskIds(task) {
   return task.gid
 }
 
+function capitalize(str) {
+  return str.charAt(0).toUpperCase() + str.slice(1)
+}
+
 async function addAsanaComment(core, token, tasks, comment) {
   core.info(`tasks: ${tasks}, comment: ${comment}`)
   if (!tasks || !tasks.length) return
@@ -67,7 +71,7 @@ async function hasPRComments(token, taskId) {
 }
 
 const utils = (core, github) => {
-  const getNewPRBody = (body, tasks, commentPrefix) => {
+  const getNewPRBody = (body, tasks, commentPrefixes) => {
     const multiTasks = tasks.length > 1
     const linkBody = tasks.reduce((links, task, idx) => {
       links = `${links}[this Asana task](${task.permalink_url})`
@@ -79,15 +83,20 @@ const utils = (core, github) => {
         links += '.'
       }
       return links
-    }, commentPrefix || '')
+    }, '')
     const lines = body.split('\n')
     let newBody = ''
     while (lines.length > 0) {
       const line = lines.shift()
       if (
-        line.trim().toLowerCase().startsWith(commentPrefix.trim().toLowerCase())
+        commentPrefixes.some((prefix) =>
+          line.trim().toLowerCase().startsWith(prefix.trim().toLowerCase()),
+        )
       ) {
-        newBody += linkBody
+        const prefix = commentPrefixes.find((prefix) =>
+          line.trim().toLowerCase().startsWith(prefix.trim().toLowerCase()),
+        )
+        newBody += capitalize(prefix) + ' ' + linkBody
       } else {
         newBody += line
       }
@@ -103,11 +112,11 @@ const utils = (core, github) => {
     github_token,
     tasks,
     pr,
-    commentPrefix,
+    commentPrefixes,
     isIssue,
   ) => {
     if (!tasks || !tasks.length) return
-    const newBody = getNewPRBody(pr.body, tasks, commentPrefix)
+    const newBody = getNewPRBody(pr.body, tasks, commentPrefixes)
     const request = {
       body: newBody,
       owner: github.context.repo.owner,
@@ -200,7 +209,7 @@ const utils = (core, github) => {
     await addAsanaComment(core, token, tasks, comment)
   }
 
-  const getAsanaShortIds = (body, commentPrefix) => {
+  const getAsanaShortIds = (body, commentPrefixes) => {
     if (!body) return null
 
     body = body.replace(/ /g, '') // raw body
@@ -209,7 +218,9 @@ const utils = (core, github) => {
     while (lines.length > 0) {
       const line = lines.shift()
       if (
-        line.trim().toLowerCase().startsWith(commentPrefix.trim().toLowerCase())
+        commentPrefixes.some((prefix) =>
+          line.trim().toLowerCase().startsWith(prefix.trim().toLowerCase()),
+        )
       ) {
         const resp = []
         let matches

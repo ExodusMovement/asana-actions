@@ -6,11 +6,11 @@ const ACTION_MOVE_TO_SECTION_PREFIX = 'MOVE_TO_SECTION'
 module.exports = async (core, github) => {
   const github_token = core.getInput('github_token')
   const asana_token = core.getInput('asana_token')
-  const commentPrefix = core.getInput('comment_prefix') || 'closes: '
   const on_open_action = core.getInput('on_open_action')
   const fail_on_no_task = core.getInput('fail_on_no_task')
   const on_merge_action =
     core.getInput('on_merge_action') || ACTION_CLOSE_PREFIX
+  const commentPrefixes = ['closes:', 'fixes:']
 
   const utils = createUtils(core, github, asana_token)
 
@@ -93,7 +93,7 @@ module.exports = async (core, github) => {
     core.info('Skipping, already found asana link on PR')
     return
   }
-  const shortidList = utils.getAsanaShortIds(pr.body, commentPrefix)
+  const shortidList = utils.getAsanaShortIds(pr.body, commentPrefixes)
   let tasks
   if (action === 'opened' || action === 'edited') {
     tasks = await lookupTasks(shortidList)
@@ -103,7 +103,7 @@ module.exports = async (core, github) => {
       github_token,
       tasks,
       pr,
-      commentPrefix,
+      commentPrefixes,
       isIssue,
     )
 

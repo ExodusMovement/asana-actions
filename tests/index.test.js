@@ -41,6 +41,10 @@ describe('Asana Actions Workflow', () => {
     await createAsanaActionsWorkflow(core, createGithub(1234))
   })
 
+  it('Should link open PR with Asana task with Fixes prefix', async () => {
+    await createAsanaActionsWorkflow(core, createGithub(1234))
+  })
+
   it('Should complete Asana task', async () => {
     await createAsanaActionsWorkflow(core, createGithub(1235))
   })
