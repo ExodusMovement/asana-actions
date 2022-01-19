@@ -28,11 +28,12 @@ module.exports = async (core, github) => {
 
   const lookupTasks = async (shortidList) => {
     if (!shortidList || !shortidList.length) {
-      core.info('No matching asana short id in: ' + pr.title)
+      core.info('No matching asana short id in: ' + JSON.stringify(pr.body))
       if (fail_on_no_task) {
-        throw { message: 'No matching asana short id in: ' + pr.title }
+        throw new Error(
+          'No matching asana short id in: ' + JSON.stringify(pr.body),
+        )
       }
-      return
     } else {
       core.info('Searching for short id: ' + shortidList.join(','))
     }

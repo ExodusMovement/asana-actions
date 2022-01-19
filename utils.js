@@ -9,10 +9,6 @@ function timeout(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms))
 }
 
-function shortIdList(shortids) {
-  return shortids.slice(1).split(',')
-}
-
 function stripTaskIds(task) {
   return task.gid
 }
@@ -125,7 +121,7 @@ const utils = (core, github) => {
   }
 
   const completeAsanaTasks = async (token, tasks) => {
-    if (!tasks || !tasks.length) return
+    if (!tasks?.length) return
     try {
       await Promise.all(
         [...tasks].map((task) =>
@@ -181,17 +177,15 @@ const utils = (core, github) => {
   }
 
   const getMatchingAsanaTasks = async (token, ids) => {
-    return Promise.all(
-      ids.map(async (taskId) => {
-        const resp = await fetch(token)(`tasks/${taskId}`).get()
-        return resp.data
-      }),
+    const responses = await Promise.all(
+      ids.map(async (taskId) => fetch(token)(`tasks/${taskId}`).get()),
     )
+    return responses.map(({ data }) => data)
   }
 
   const addGithubPrToAsanaTask = async (token, tasks, title, url) => {
     core.info(`tasks in addGithubPrToAsanaTask ${tasks}`)
-    if (!tasks || !tasks.length) return
+    if (!tasks?.length) return
     const tasksToComment = []
     for (const task of tasks) {
       const checkCommentInTask = await hasPRComments(token, task.gid)
