@@ -70,6 +70,14 @@ async function hasPRComments(token, taskId) {
   return false
 }
 
+function startsWithPrefix(str, prefix) {
+  return str.trim().toLowerCase().startsWith(prefix.trim().toLowerCase())
+}
+
+function startsWithAnyPrefix(str, prefixes) {
+  return prefixes.some((prefix) => startsWithPrefix(str, prefix))
+}
+
 const utils = (core, github) => {
   const getNewPRBody = (body, tasks, commentPrefixes) => {
     const multiTasks = tasks.length > 1
@@ -88,13 +96,9 @@ const utils = (core, github) => {
     let newBody = ''
     while (lines.length > 0) {
       const line = lines.shift()
-      if (
-        commentPrefixes.some((prefix) =>
-          line.trim().toLowerCase().startsWith(prefix.trim().toLowerCase()),
-        )
-      ) {
+      if (startsWithAnyPrefix(line, commentPrefixes)) {
         const prefix = commentPrefixes.find((prefix) =>
-          line.trim().toLowerCase().startsWith(prefix.trim().toLowerCase()),
+          startsWithPrefix(line, prefix),
         )
         newBody += capitalize(prefix) + ' ' + linkBody
       } else {
@@ -217,11 +221,7 @@ const utils = (core, github) => {
     const lines = body.split('\n')
     while (lines.length > 0) {
       const line = lines.shift()
-      if (
-        commentPrefixes.some((prefix) =>
-          line.trim().toLowerCase().startsWith(prefix.trim().toLowerCase()),
-        )
-      ) {
+      if (startsWithAnyPrefix(line, commentPrefixes)) {
         const resp = []
         let matches
         const reg = RegExp('https://app.asana.com/[0-9]/[0-9]*/[0-9]*', 'g')
