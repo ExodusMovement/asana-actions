@@ -121,7 +121,7 @@ const utils = (core, github) => {
   }
 
   const completeAsanaTasks = async (token, tasks) => {
-    if (!tasks?.length) return
+    if (!tasks && tasks.length === 0) return
     try {
       await Promise.all(
         [...tasks].map((task) =>
@@ -185,7 +185,7 @@ const utils = (core, github) => {
 
   const addGithubPrToAsanaTask = async (token, tasks, title, url) => {
     core.info(`tasks in addGithubPrToAsanaTask ${tasks}`)
-    if (!tasks?.length) return
+    if (!tasks || tasks.length === 0) return
     const tasksToComment = []
     for (const task of tasks) {
       const checkCommentInTask = await hasPRComments(token, task.gid)

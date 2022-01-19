@@ -40,7 +40,7 @@ module.exports = async (core, github) => {
 
     const tasks = await utils.getMatchingAsanaTasks(asana_token, shortidList)
 
-    if (tasks?.length > 0) {
+    if (tasks && tasks.length > 0) {
       core.info('Got matching task: ' + JSON.stringify(tasks))
     } else {
       core.error('Did not find matching task')
