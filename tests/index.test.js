@@ -42,7 +42,7 @@ describe('Asana Actions Workflow', () => {
   })
 
   it('Should link open PR with Asana task with Fixes prefix', async () => {
-    await createAsanaActionsWorkflow(core, createGithub(1234))
+    await createAsanaActionsWorkflow(core, createGithub(1239))
   })
 
   it('Should complete Asana task', async () => {
@@ -55,5 +55,9 @@ describe('Asana Actions Workflow', () => {
 
   it('Should do nothing if PR is already linked', async () => {
     await createAsanaActionsWorkflow(core, createGithub(1237))
+  })
+
+  it('Should do nothing if PR does not use a valid prefix', async () => {
+    await createAsanaActionsWorkflow(core, createGithub(1238))
   })
 })

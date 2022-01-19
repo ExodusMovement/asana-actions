@@ -79,4 +79,17 @@ describe('Unit tests for getting short ids', () => {
     const asanaIds = utils.getAsanaShortIds(body, [commentPrefix])
     expect(asanaIds).toEqual(['123456789', '123456780', '123456781'])
   })
+
+  it('Should return ids when body has multiple asana link', () => {
+    const commentPrefix = ['closes:', 'fixes:']
+    let body =
+      '## Summary\nFooo\ncloses: https://app.asana.com/0/120000000/123456789 https://app.asana.com/0/120000001/123456780 https://app.asana.com/0/120000002/123456781'
+    let asanaIds = utils.getAsanaShortIds(body, commentPrefix)
+    expect(asanaIds).toEqual(['123456789', '123456780', '123456781'])
+
+    body =
+      '## Summary\nFooo\nfixes: https://app.asana.com/0/120000000/123456789 https://app.asana.com/0/120000001/123456780 https://app.asana.com/0/120000002/123456781'
+    asanaIds = utils.getAsanaShortIds(body, commentPrefix)
+    expect(asanaIds).toEqual(['123456789', '123456780', '123456781'])
+  })
 })
