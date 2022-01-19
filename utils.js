@@ -168,11 +168,7 @@ const utils = (core, github) => {
         )}) to sections/${validSectionIds}/addTask`,
       )
     } catch (exc) {
-      core.error(
-        `Error while posting task(s) (${tasks.map(
-          stripTaskIds,
-        )}) to sections/${sectionId}/addTask`,
-      )
+      core.error(`Error while posting task(s) (${tasks.map(stripTaskIds)})`)
     }
   }
 

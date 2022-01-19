@@ -14,7 +14,7 @@ const getPR = (number) =>
 
 const createGithub = (number) => {
   const github = getPR(number)
-  const getOctokit = (access_token) => {
+  const getOctokit = () => {
     return {
       pulls: {
         update: (newBody) => {

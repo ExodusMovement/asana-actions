@@ -31,7 +31,7 @@ const putTask = (url, { data }) => {
   expect(task.completed).toEqual(data.completed)
 }
 
-const fetch = (token) => (url) => ({
+const fetch = () => (url) => ({
   get: async () => {
     switch (true) {
       case /stories/.test(url):
