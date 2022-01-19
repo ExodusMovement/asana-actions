@@ -1,16 +1,16 @@
 name: Asana Link
 on:
   issues:
-    types: [ opened, closed, edited ]
+    types: [opened, closed, edited]
   pull_request:
-    types: [ opened, closed, edited ]
+    types: [opened, closed, edited]
 jobs:
   asana:
     runs-on: ubuntu-latest
     steps:
-    - name: Asana Github Link
-      uses: ExodusMovement/asana-actions@3.2.1
-      with:
-        asana_token: ${{ secrets.ASANA_TOKEN }}
-        workspace: ${{ secrets.ASANA_WORKSPACE_ID }}
-        github_token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Asana Github Link
+        uses: ExodusMovement/asana-actions@3.2.1-draft1
+        with:
+          asana_token: ${{ secrets.ASANA_TOKEN }}
+          workspace: ${{ secrets.ASANA_WORKSPACE_ID }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
