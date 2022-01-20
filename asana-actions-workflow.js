@@ -59,6 +59,7 @@ module.exports = async (core, github) => {
   const isMoveAction = (onAction) => {
     return onAction.startsWith(ACTION_MOVE_TO_SECTION_PREFIX)
   }
+
   const getProjectAndSectionFromAction = (onAction) => {
     return onAction
       .substring(ACTION_MOVE_TO_SECTION_PREFIX.length, onAction.length)
