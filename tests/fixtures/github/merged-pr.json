@@ -3,10 +3,10 @@
     "payload": {
       "issue": false,
       "pull_request": {
-        "title": "feat: dummy PR2 !1235",
+        "title": "feat: dummy PR2",
         "number": 1235,
         "url": "https://github.com/ExodusMovement/exodus-mobile/pull/1235",
-        "body": "## Summary",
+        "body": "## Summary\nCloses: [this Asana task](https://app.asana.com/0/120000000/1235).",
         "merged": true
       },
       "action": "closed"
@@ -17,7 +17,7 @@
     }
   },
   "newBody": {
-    "body": "## Summary\nThis Pr...\n\nLinked Asana: This PR is linked to  [this Asana task.](https://app.asana.com/0/exodus_0/1235)",
+    "body": "## Summary\nCloses: [this Asana task](https://app.asana.com/0/120000000/1235).",
     "owner": "Someone",
     "pull_number": 1235,
     "repo": "exodus-mobile"

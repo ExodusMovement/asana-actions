@@ -14,7 +14,7 @@ const getPR = (number) =>
 
 const createGithub = (number) => {
   const github = getPR(number)
-  const getOctokit = (access_token) => {
+  const getOctokit = () => {
     return {
       pulls: {
         update: (newBody) => {
@@ -41,6 +41,10 @@ describe('Asana Actions Workflow', () => {
     await createAsanaActionsWorkflow(core, createGithub(1234))
   })
 
+  it('Should link open PR with Asana task with Fixes prefix', async () => {
+    await createAsanaActionsWorkflow(core, createGithub(1239))
+  })
+
   it('Should complete Asana task', async () => {
     await createAsanaActionsWorkflow(core, createGithub(1235))
   })
@@ -51,5 +55,9 @@ describe('Asana Actions Workflow', () => {
 
   it('Should do nothing if PR is already linked', async () => {
     await createAsanaActionsWorkflow(core, createGithub(1237))
+  })
+
+  it('Should do nothing if PR does not use a valid prefix', async () => {
+    await createAsanaActionsWorkflow(core, createGithub(1238))
   })
 })

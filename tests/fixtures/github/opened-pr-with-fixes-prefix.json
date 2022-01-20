@@ -1,0 +1,25 @@
+{
+  "context": {
+    "payload": {
+      "issue": false,
+      "pull_request": {
+        "title": "feat: dummy PR with Fixes prefix",
+        "number": 1239,
+        "url": "https://github.com/ExodusMovement/exodus-mobile/pull/1239",
+        "body": "## Summary\nblah blah blah\nfixes: https://app.asana.com/0/120000000/1239",
+        "merged": false
+      },
+      "action": "opened"
+    },
+    "repo": {
+      "owner": "Someone",
+      "repo": "exodus-mobile"
+    }
+  },
+  "newBody": {
+    "body": "## Summary\nblah blah blah\nFixes: [this Asana task](https://app.asana.com/0/120000000/1239).",
+    "owner": "Someone",
+    "pull_number": 1239,
+    "repo": "exodus-mobile"
+  }
+}

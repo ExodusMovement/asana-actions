@@ -3,34 +3,48 @@
     "gid": "1234",
     "modifiedAt": "2022-01-17T16:20:59.135Z",
     "comments": [{ "text": "Dummy comment" }],
-    "newComment": "<strong>Linked GitHub PR:</strong> feat: dummy PR !1234\n<a href=\"https://github.com/ExodusMovement/exodus-mobile/pull/1234\"/>"
+    "newComment": "<strong>Linked GitHub PR:</strong> feat: dummy PR\n<a href=\"https://github.com/ExodusMovement/exodus-mobile/pull/1234\"/>",
+    "permalink_url": "https://app.asana.com/0/120000000/1234"
   },
   {
     "gid": "1235",
     "modifiedAt": "2022-01-17T16:22:59.135Z",
     "comments": [
       {
-        "text": "<strong>Linked GitHub PR:</strong> feat: dummy PR !1234\n<a href=\"https://github.com/ExodusMovement/exodus-mobile/pull/1234\"/>"
+        "text": "<strong>Linked GitHub PR:</strong> feat: dummy PR\n<a href=\"https://github.com/ExodusMovement/exodus-mobile/pull/1234\"/>"
       }
     ],
-    "completed": true
+    "completed": true,
+    "permalink_url": "https://app.asana.com/0/120000000/1235"
   },
   {
     "gid": "1236",
     "modifiedAt": "2022-01-17T16:22:59.135Z",
     "comments": [
       {
-        "text": "<strong>Linked GitHub PR:</strong> feat: dummy PR !1236\n<a href=\"https://github.com/ExodusMovement/exodus-mobile/pull/1236\"/>"
+        "text": "<strong>Linked GitHub PR:</strong> feat: dummy PR\n<a href=\"https://github.com/ExodusMovement/exodus-mobile/pull/1236\"/>"
       }
-    ]
+    ],
+    "permalink_url": "https://app.asana.com/0/120000000/1236"
   },
   {
     "gid": "1237",
     "modifiedAt": "2022-01-17T16:22:59.135Z",
     "comments": [
       {
-        "text": "<strong>Linked GitHub PR:</strong> feat: dummy PR !1237\n<a href=\"https://github.com/ExodusMovement/exodus-mobile/pull/1237\"/>"
+        "text": "<strong>Linked GitHub PR:</strong> feat: dummy PR\n<a href=\"https://github.com/ExodusMovement/exodus-mobile/pull/1237\"/>"
       }
-    ]
+    ],
+    "permalink_url": "https://app.asana.com/0/120000000/1237"
+  },
+  {
+    "gid": "1239",
+    "modifiedAt": "2022-01-17T16:22:59.135Z",
+    "comments": [
+      {
+        "text": "<strong>Linked GitHub PR:</strong> feat: dummy PR with Fixes prefix\n<a href=\"https://github.com/ExodusMovement/exodus-mobile/pull/1239\"/>"
+      }
+    ],
+    "permalink_url": "https://app.asana.com/0/120000000/1239"
   }
 ]

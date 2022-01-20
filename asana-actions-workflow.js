@@ -4,19 +4,19 @@ const ACTION_CLOSE_PREFIX = 'CLOSE'
 const ACTION_MOVE_TO_SECTION_PREFIX = 'MOVE_TO_SECTION'
 
 module.exports = async (core, github) => {
-  const utils = createUtils(core, github)
   const github_token = core.getInput('github_token')
   const asana_token = core.getInput('asana_token')
-  const workspace = core.getInput('workspace')
-  const commentPrefix = core.getInput('comment_prefix') || 'Linked Asana: '
   const on_open_action = core.getInput('on_open_action')
   const fail_on_no_task = core.getInput('fail_on_no_task')
   const on_merge_action =
     core.getInput('on_merge_action') || ACTION_CLOSE_PREFIX
+  const commentPrefixes = ['closes:', 'fixes:']
+
+  const utils = createUtils(core, github, asana_token)
+
   const isIssue = !!github.context.payload.issue
   const pr = github.context.payload.pull_request || github.context.payload.issue
   const action = github.context.payload.action
-  let tasks
 
   if (!asana_token) {
     throw { message: 'ASANA_TOKEN not set' }
@@ -28,22 +28,19 @@ module.exports = async (core, github) => {
 
   const lookupTasks = async (shortidList) => {
     if (!shortidList || !shortidList.length) {
-      core.info('No matching asana short id in: ' + pr.title)
+      core.info('No matching asana short id in: ' + JSON.stringify(pr.body))
       if (fail_on_no_task) {
-        throw { message: 'No matching asana short id in: ' + pr.title }
+        throw new Error(
+          'No matching asana short id in: ' + JSON.stringify(pr.body),
+        )
       }
-      return
     } else {
       core.info('Searching for short id: ' + shortidList.join(','))
     }
 
-    const tasks = await utils.getMatchingAsanaTasks(
-      asana_token,
-      workspace,
-      shortidList,
-    )
+    const tasks = await utils.getMatchingAsanaTasks(asana_token, shortidList)
 
-    if (tasks && tasks.length) {
+    if (tasks && tasks.length > 0) {
       core.info('Got matching task: ' + JSON.stringify(tasks))
     } else {
       core.error('Did not find matching task')
@@ -92,44 +89,43 @@ module.exports = async (core, github) => {
       core.info('Moved linked Asana task(s) to section ' + projectSectionPairs)
     }
   }
-
-  const shortidList = utils.getAsanaShortIds(pr.title)
+  if (/\[this Asana task\]/.test(pr.body)) {
+    core.info('Skipping, already found asana link on PR')
+    return
+  }
+  const shortidList = utils.getAsanaShortIds(pr.body, commentPrefixes)
+  let tasks
   if (action === 'opened' || action === 'edited') {
-    if (!pr.body || pr.body.indexOf(commentPrefix) === -1) {
-      tasks = await lookupTasks(shortidList)
-      if (!tasks || !tasks.length) return
+    tasks = await lookupTasks(shortidList)
+    if (!tasks || !tasks.length) return
 
-      const response = await utils.updatePRBody(
-        workspace,
-        github_token,
-        tasks,
-        pr,
-        commentPrefix,
-        isIssue,
+    const response = await utils.updatePRBody(
+      github_token,
+      tasks,
+      pr,
+      commentPrefixes,
+      isIssue,
+    )
+
+    if (response.status !== 200) {
+      core.error(
+        'There was an issue while trying to update the pull-request/issue.',
       )
-
-      if (response.status !== 200) {
-        core.error(
-          'There was an issue while trying to update the pull-request/issue.',
-        )
-      } else {
-        // only when opened and asana link not found so we can have the PR link (comment) as soon as the first PR action
-        await utils.addGithubPrToAsanaTask(
-          asana_token,
-          tasks,
-          pr.title,
-          pr.html_url || pr.url,
-        )
-        core.info('Modified PR body with asana link')
-      }
     } else {
-      core.info('Skipping, already found asana link on PR')
+      // only when opened and asana link not found so we can have the PR link (comment) as soon as the first PR action
+      await utils.addGithubPrToAsanaTask(
+        asana_token,
+        tasks,
+        pr.title,
+        pr.html_url || pr.url,
+      )
+      core.info('Modified PR body with asana link')
     }
 
     if (action === 'opened' && on_open_action) {
-      if (tasks && tasks.length) await doAction(tasks, on_open_action)
+      await doAction(tasks, on_open_action)
     }
-  } else if (action === 'closed' && (isIssue ? true : pr.merged)) {
+  } else if (action === 'closed' && (isIssue || pr.merged)) {
     tasks = await lookupTasks(shortidList)
     if (!tasks || !tasks.length) return
 
