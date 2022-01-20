@@ -90,13 +90,14 @@ module.exports = async (core, github) => {
       core.info('Moved linked Asana task(s) to section ' + projectSectionPairs)
     }
   }
-  if (/\[this Asana task\]/.test(pr.body)) {
-    core.info('Skipping, already found asana link on PR')
-    return
-  }
+
   const shortidList = utils.getAsanaShortIds(pr.body, commentPrefixes)
   let tasks
   if (action === 'opened' || action === 'edited') {
+    if (/\[this Asana task\]/.test(pr.body)) {
+      core.info('Skipping, already found asana link on PR')
+      return
+    }
     tasks = await lookupTasks(shortidList)
     if (!tasks || !tasks.length) return
 
