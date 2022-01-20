@@ -1,0 +1,7 @@
+{
+  "github_token": "ABC",
+  "asana_token": "DEF",
+  "workspace": "exodus_0",
+  "on_open_action": "foo",
+  "fail_on_no_task": false
+}
