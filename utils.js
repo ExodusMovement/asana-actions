@@ -96,10 +96,10 @@ const utils = (core, github) => {
     let newBody = ''
     while (lines.length > 0) {
       const line = lines.shift()
-      if (startsWithAnyPrefix(line, commentPrefixes)) {
-        const prefix = commentPrefixes.find((prefix) =>
-          startsWithPrefix(line, prefix),
-        )
+      const prefix = commentPrefixes.find((prefix) =>
+        startsWithPrefix(line, prefix),
+      )
+      if (prefix) {
         newBody += capitalize(prefix) + ' ' + linkBody
       } else {
         newBody += line
