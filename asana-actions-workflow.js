@@ -24,8 +24,8 @@ module.exports = async (core, github) => {
     `Running action for ${isIssue ? 'issue' : 'PR'} #${pr.number}: ${pr.title}`,
   )
 
-  const lookupTasks = async (shortidList) => {
-    if (!shortidList || !shortidList.length) {
+  const lookupTasks = async (taskIds) => {
+    if (!taskIds || !taskIds.length) {
       core.info('No matching asana short id in: ' + JSON.stringify(pr.body))
       if (failOnNoTask) {
         throw new Error(
@@ -33,10 +33,10 @@ module.exports = async (core, github) => {
         )
       }
     } else {
-      core.info('Searching for short id: ' + shortidList.join(','))
+      core.info('Searching for short id: ' + taskIds.join(','))
     }
 
-    const tasks = await utils.getMatchingAsanaTasks(shortidList)
+    const tasks = await utils.getMatchingAsanaTasks(taskIds)
 
     if (tasks && tasks.length > 0) {
       core.info('Got matching task: ' + JSON.stringify(tasks))
@@ -80,14 +80,14 @@ module.exports = async (core, github) => {
     }
   }
 
-  const shortidList = utils.getAsanaShortIds(pr.body, commentPrefixes)
+  const [taskIds] = utils.getAsanaIds(pr.body, commentPrefixes)
   let tasks
   if (action === 'opened' || action === 'edited') {
     if (/\[this Asana task\]/.test(pr.body)) {
       core.info('Skipping, already found asana link on PR')
       return
     }
-    tasks = await lookupTasks(shortidList)
+    tasks = await lookupTasks(taskIds)
     if (!tasks || !tasks.length) return
 
     const response = await utils.updatePRBody(
@@ -111,7 +111,7 @@ module.exports = async (core, github) => {
       await doAction(tasks, onOpenAction)
     }
   } else if (action === 'closed' && (isIssue || pr.merged)) {
-    tasks = await lookupTasks(shortidList)
+    tasks = await lookupTasks(taskIds)
     if (!tasks || !tasks.length) return
 
     if (onMergeAction) {

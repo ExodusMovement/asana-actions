@@ -55,12 +55,12 @@ describe('Unit tests for creating new body', () => {
   })
 })
 
-describe('Unit tests for getting short ids', () => {
+describe('Unit tests for getting  ids', () => {
   const utils = createUtils()
   it('Should return empty list when body has no asana link', () => {
     const commentPrefix = 'closes:'
     const body = '## Summary\nFooo'
-    const asanaIds = utils.getAsanaShortIds(body, [commentPrefix])
+    const [asanaIds] = utils.getAsanaIds(body, [commentPrefix])
     expect(asanaIds).toEqual([])
   })
 
@@ -68,28 +68,33 @@ describe('Unit tests for getting short ids', () => {
     const commentPrefix = 'closes:'
     const body =
       '## Summary\nFooo\ncloses: https://app.asana.com/0/120000000/123456789'
-    const asanaIds = utils.getAsanaShortIds(body, [commentPrefix])
-    expect(asanaIds).toEqual(['123456789'])
+    const [taskIds, projectIds] = utils.getAsanaIds(body, [commentPrefix])
+    expect(taskIds).toEqual(['123456789'])
+    expect(projectIds).toEqual(['120000000'])
   })
 
   it('Should return ids when body has multiple asana link', () => {
     const commentPrefix = 'closes:'
     const body =
-      '## Summary\nFooo\ncloses: https://app.asana.com/0/120000000/123456789 https://app.asana.com/0/120000001/123456780 https://app.asana.com/0/120000002/123456781'
-    const asanaIds = utils.getAsanaShortIds(body, [commentPrefix])
-    expect(asanaIds).toEqual(['123456789', '123456780', '123456781'])
+      '## Summary\nFooo\ncloses: https://app.asana.com/0/120000000/123456789 https://app.asana.com/0/120000001/123456780 https://app.asana.com/0/120000001/123456781'
+    const [taskIds, projectIds] = utils.getAsanaIds(body, [commentPrefix])
+    expect(taskIds).toEqual(['123456789', '123456780', '123456781'])
+    expect(projectIds).toEqual(['120000000', '120000001'])
   })
 
   it('Should return ids when body has multiple asana link', () => {
     const commentPrefix = ['closes:', 'fixes:']
     let body =
       '## Summary\nFooo\ncloses: https://app.asana.com/0/120000000/123456789 https://app.asana.com/0/120000001/123456780 https://app.asana.com/0/120000002/123456781'
-    let asanaIds = utils.getAsanaShortIds(body, commentPrefix)
-    expect(asanaIds).toEqual(['123456789', '123456780', '123456781'])
+    let [taskIds, projectIds] = utils.getAsanaIds(body, commentPrefix)
+    expect(taskIds).toEqual(['123456789', '123456780', '123456781'])
+    expect(projectIds).toEqual(['120000000', '120000001', '120000002'])
 
     body =
-      '## Summary\nFooo\nfixes: https://app.asana.com/0/120000000/123456789 https://app.asana.com/0/120000001/123456780 https://app.asana.com/0/120000002/123456781'
-    asanaIds = utils.getAsanaShortIds(body, commentPrefix)
-    expect(asanaIds).toEqual(['123456789', '123456780', '123456781'])
+      '## Summary\nFooo\nfixes: https://app.asana.com/0/120000000/123456789 https://app.asana.com/0/120000001/123456780 https://app.asana.com/0/120000002/123456781'[
+        (taskIds, projectIds)
+      ] = utils.getAsanaIds(body, commentPrefix)
+    expect(taskIds).toEqual(['123456789', '123456780', '123456781'])
+    expect(projectIds).toEqual(['120000000', '120000001', '120000002'])
   })
 })

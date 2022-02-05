@@ -207,7 +207,7 @@ const utils = (core, github, githubToken, asanaToken) => {
     await addAsanaComment(core, asanaToken, tasks, comment)
   }
 
-  const getAsanaShortIds = (body, commentPrefixes) => {
+  const getAsanaIds = (body, commentPrefixes) => {
     if (!body) return null
 
     body = body.replace(/ /g, '') // raw body
@@ -216,16 +216,18 @@ const utils = (core, github, githubToken, asanaToken) => {
     while (lines.length > 0) {
       const line = lines.shift()
       if (startsWithAnyPrefix(line, commentPrefixes)) {
-        const resp = []
+        const taskIds = new Set() // To avoid duplicates values.
+        const projectIds = new Set() // To avoid duplicates values.
         let matches
         const reg = RegExp('https://app.asana.com/[0-9]/[0-9]*/[0-9]*', 'g')
         while ((matches = reg.exec(line)) !== null) {
-          resp.push(...matches[0].split('/').slice(-1))
+          taskIds.add(...matches[0].split('/').slice(-1))
+          projectIds.add(...matches[0].split('/').slice(-2))
         }
-        return resp
+        return [Array.from(taskIds), Array.from(projectIds)]
       }
     }
-    return []
+    return [[], []]
   }
 
   return {
@@ -235,7 +237,7 @@ const utils = (core, github, githubToken, asanaToken) => {
     moveAsanaTasksToSection,
     getMatchingAsanaTasks,
     addGithubPrToAsanaTask,
-    getAsanaShortIds,
+    getAsanaIds,
   }
 }
 
