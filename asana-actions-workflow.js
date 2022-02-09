@@ -12,7 +12,7 @@ module.exports = async (core, github) => {
     core.getInput('on_merge_action') || ACTION_CLOSE_PREFIX
   const commentPrefixes = ['closes:', 'fixes:']
 
-  const utils = createUtils(core, github, asana_token)
+  const utils = createUtils(core, github, github_token, asana_token)
 
   const isIssue = !!github.context.payload.issue
   const pr = github.context.payload.pull_request || github.context.payload.issue
@@ -38,7 +38,7 @@ module.exports = async (core, github) => {
       core.info('Searching for short id: ' + shortidList.join(','))
     }
 
-    const tasks = await utils.getMatchingAsanaTasks(asana_token, shortidList)
+    const tasks = await utils.getMatchingAsanaTasks(shortidList)
 
     if (tasks && tasks.length > 0) {
       core.info('Got matching task: ' + JSON.stringify(tasks))
@@ -69,24 +69,15 @@ module.exports = async (core, github) => {
 
   const doAction = async (tasks, onAction) => {
     if (isCloseAction(onAction)) {
-      await utils.completeAsanaTasks(asana_token, tasks)
+      await utils.completeAsanaTasks(tasks)
       core.info('Marked linked Asana task(s) as completed')
-      await utils.addGithubPrToAsanaTask(
-        asana_token,
-        tasks,
-        pr.title,
-        pr.html_url || pr.url,
-      )
+      await utils.addGithubPrToAsanaTask(tasks, pr.title, pr.html_url || pr.url)
       core.info('Post PR link to asana task on completion.')
     }
     if (isMoveAction(onAction)) {
       const projectSectionPairs = getProjectAndSectionFromAction(onAction)
       core.info('Moving Asana task(s) to section ' + projectSectionPairs)
-      await utils.moveAsanaTasksToSection(
-        asana_token,
-        tasks,
-        projectSectionPairs,
-      )
+      await utils.moveAsanaTasksToSection(tasks, projectSectionPairs)
       core.info('Moved linked Asana task(s) to section ' + projectSectionPairs)
     }
   }
@@ -102,7 +93,6 @@ module.exports = async (core, github) => {
     if (!tasks || !tasks.length) return
 
     const response = await utils.updatePRBody(
-      github_token,
       tasks,
       pr,
       commentPrefixes,
@@ -115,12 +105,7 @@ module.exports = async (core, github) => {
       )
     } else {
       // only when opened and asana link not found so we can have the PR link (comment) as soon as the first PR action
-      await utils.addGithubPrToAsanaTask(
-        asana_token,
-        tasks,
-        pr.title,
-        pr.html_url || pr.url,
-      )
+      await utils.addGithubPrToAsanaTask(tasks, pr.title, pr.html_url || pr.url)
       core.info('Modified PR body with asana link')
     }
 

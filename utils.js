@@ -78,7 +78,7 @@ function startsWithAnyPrefix(str, prefixes) {
   return prefixes.some((prefix) => startsWithPrefix(str, prefix))
 }
 
-const utils = (core, github) => {
+const utils = (core, github, githubToken, asanaToken) => {
   const getNewPRBody = (body, tasks, commentPrefixes) => {
     const multiTasks = tasks.length > 1
     const linkBody = tasks.reduce((links, task, idx) => {
@@ -112,13 +112,7 @@ const utils = (core, github) => {
     return newBody
   }
 
-  const updatePRBody = async (
-    github_token,
-    tasks,
-    pr,
-    commentPrefixes,
-    isIssue,
-  ) => {
+  const updatePRBody = async (tasks, pr, commentPrefixes, isIssue) => {
     if (!tasks || !tasks.length) return
     const newBody = getNewPRBody(pr.body, tasks, commentPrefixes)
     const request = {
@@ -128,17 +122,17 @@ const utils = (core, github) => {
     }
     if (isIssue) request.issue_number = pr.number
     else request.pull_number = pr.number
-    const octokit = github.getOctokit(github_token)
+    const octokit = github.getOctokit(githubToken)
     if (isIssue) return octokit.issues.update(request)
     else return octokit.pulls.update(request)
   }
 
-  const completeAsanaTasks = async (token, tasks) => {
+  const completeAsanaTasks = async (tasks) => {
     if (!tasks && tasks.length === 0) return
     try {
       await Promise.all(
         [...tasks].map((task) =>
-          fetch(token)(`tasks/${task.gid}`).put({
+          fetch(asanaToken)(`tasks/${task.gid}`).put({
             data: {
               completed: true,
             },
@@ -151,7 +145,7 @@ const utils = (core, github) => {
     }
   }
 
-  const moveAsanaTasksToSection = async (token, tasks, projectSectionPairs) => {
+  const moveAsanaTasksToSection = async (tasks, projectSectionPairs) => {
     if (!tasks || !tasks.length) return
     try {
       const validSectionIds = []
@@ -166,7 +160,7 @@ const utils = (core, github) => {
             if (taskInProject) {
               // if task is in project, then move to section
               validSectionIds.push(sectionId)
-              fetch(token)(`sections/${sectionId}/addTask`).post({
+              fetch(asanaToken)(`sections/${sectionId}/addTask`).post({
                 data: {
                   task: task.gid,
                 },
@@ -185,19 +179,19 @@ const utils = (core, github) => {
     }
   }
 
-  const getMatchingAsanaTasks = async (token, ids) => {
+  const getMatchingAsanaTasks = async (ids) => {
     const responses = await Promise.all(
-      ids.map(async (taskId) => fetch(token)(`tasks/${taskId}`).get()),
+      ids.map(async (taskId) => fetch(asanaToken)(`tasks/${taskId}`).get()),
     )
     return responses.map(({ data }) => data)
   }
 
-  const addGithubPrToAsanaTask = async (token, tasks, title, url) => {
+  const addGithubPrToAsanaTask = async (tasks, title, url) => {
     core.info(`tasks in addGithubPrToAsanaTask ${tasks}`)
     if (!tasks || tasks.length === 0) return
     const tasksToComment = []
     for (const task of tasks) {
-      const checkCommentInTask = await hasPRComments(token, task.gid)
+      const checkCommentInTask = await hasPRComments(asanaToken, task.gid)
       if (!checkCommentInTask) tasksToComment.push(task)
     }
     core.info(`tasksToComment in addGithubPrToAsanaTask ${tasksToComment}`)
@@ -210,7 +204,7 @@ const utils = (core, github) => {
       '\n<a href="' +
       url +
       '"/>'
-    await addAsanaComment(core, token, tasks, comment)
+    await addAsanaComment(core, asanaToken, tasks, comment)
   }
 
   const getAsanaShortIds = (body, commentPrefixes) => {
