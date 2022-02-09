@@ -1,12 +1,27 @@
 name: 'Asana Github Pull Request Link'
 description: 'Closes Asana tickets when the assigned pull request is closed'
 inputs:
-  token:
+  asana_token:
     description: 'Asana Token'
     required: true
+  github_token:
+    description: 'GitHub Token (automatically set by GitHub)'
+    required: false
   workspace:
     description: 'Asana Workspace ID'
     required: true
+  comment_prefix:
+    description: 'Prefix that goes before the asana link comment'
+    required: false
+  on_open_action:
+    description: 'The action to perform when a PR is opened (CLOSE|MOVE <Section Name>)'
+    required: false
+  fail_on_no_task:
+    description: 'Make the action fail if there are no found tasks'
+    required: false
+  on_merge_action:
+    description: 'The action to perform when a PR is merged (CLOSE|MOVE <Section Name>).  Defaults to CLOSE'
+    required: false
 branding:
   icon: 'chevron-right'  
   color: 'gray-dark'
