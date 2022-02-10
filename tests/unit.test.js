@@ -1,14 +1,9 @@
 const createUtils = require('../utils')
-const coreFixture = require('./fixtures/core.json')
-const core = {
-  getInput: (value) => coreFixture[value],
-  info: (p) => {
-    console.log(p)
-  },
-  error: () => {},
-}
+const core = require('./github-core')
+
+const utils = createUtils()
+
 describe('Unit tests for creating new body', () => {
-  const utils = createUtils()
   it('Should get new PR body for one task', () => {
     const body = '## Summary\nThis PR blah blah\ncloses: https://asana.com/foo'
     const commentPrefix = 'closes:'
@@ -64,7 +59,6 @@ describe('Unit tests for creating new body', () => {
 })
 
 describe('Unit tests for getting  ids', () => {
-  const utils = createUtils()
   it('Should return empty list when body has no asana link', () => {
     const commentPrefix = 'closes:'
     const body = '## Summary\nFooo'
@@ -119,7 +113,6 @@ describe('Unit tests for getting  ids', () => {
 })
 
 describe('Unit tests for fetching sections', () => {
-  const utils = createUtils()
   it('Should return sections for one single task', async () => {
     const tasksByProjectId = {
       120000000: ['1234'],
