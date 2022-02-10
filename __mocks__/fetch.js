@@ -34,10 +34,7 @@ const postTasks = (url, { data }) => {
 
 const putTask = (url, { data }) => {
   const task = getTaskFromURL(url)
-
-  // Compare what data has vs what's in the fixture
   expect(data.completed).toEqual(task.completed)
-  expect(task.newSection).toEqual(data.assignee_section)
 }
 
 const getProjectSections = (url) => {
@@ -45,6 +42,12 @@ const getProjectSections = (url) => {
   return {
     data: project.sections,
   }
+}
+
+const postSections = (url, { data }) => {
+  const task = fixture.find((t) => t.gid === data.task)
+  const sectionId = /[0-9]+/.exec(url)[0]
+  expect(task.newSection).toEqual(sectionId)
 }
 
 const fetch = () => (url) => ({
@@ -60,7 +63,16 @@ const fetch = () => (url) => ({
         throw new Error(`unknown url ${url}`)
     }
   },
-  post: async (data) => postTasks(url, data),
+  post: async (data) => {
+    switch (true) {
+      case /tasks/.test(url):
+        return postTasks(url, data)
+      case /sections/.test(url):
+        return postSections(url, data)
+      default:
+        throw new Error(`unknown url ${url}`)
+    }
+  },
   put: async (data) => putTask(url, data),
 })
 

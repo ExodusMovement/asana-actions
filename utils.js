@@ -145,6 +145,7 @@ const utils = (core, github, githubToken, asanaToken) => {
     }
   }
 
+  // Similar to moveTaskToSection, but different use cases.
   const moveAsanaTasksToSection = async (tasks, projectSectionPairs) => {
     if (!tasks || !tasks.length) return
     try {
@@ -258,9 +259,9 @@ const utils = (core, github, githubToken, asanaToken) => {
         const tasksToUpdate = tasksByProjectId[projectId]
         if (!tasksToUpdate) return
         return tasksToUpdate.map((taskId) =>
-          fetch(asanaToken)(`/tasks/${taskId}`).put({
+          fetch(asanaToken)(`sections/${section}/addTask`).post({
             data: {
-              assignee_section: section,
+              task: taskId,
             },
           }),
         )
