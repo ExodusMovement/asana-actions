@@ -1,14 +1,8 @@
 jest.setTimeout(30000)
 const createAsanaActionsWorkflow = require('../asana-actions-workflow')
-const coreFixture = require('./fixtures/core.json')
 const githubFixture = require('./fixtures/github')
-const core = {
-  getInput: (value) => coreFixture[value],
-  info: (p) => {
-    console.log(p)
-  },
-  error: () => {},
-}
+const core = require('./github-core')
+
 const getPR = (number) =>
   githubFixture.find((gh) => gh.context.payload.pull_request.number === number)
 
@@ -59,5 +53,17 @@ describe('Asana Actions Workflow', () => {
 
   it('Should do nothing if PR does not use a valid prefix', async () => {
     await createAsanaActionsWorkflow(core, createGithub(1238))
+  })
+
+  it('Should move multiple tasks to Under Review section', async () => {
+    await createAsanaActionsWorkflow(core, createGithub(1240))
+  })
+
+  it('Should move one task to Under Review section and no-op for invalid section', async () => {
+    await createAsanaActionsWorkflow(core, createGithub(1250))
+  })
+
+  it('Should not update task section if its a draft', async () => {
+    await createAsanaActionsWorkflow(core, createGithub(1260))
   })
 })

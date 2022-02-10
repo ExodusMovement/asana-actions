@@ -1,0 +1,25 @@
+{
+  "context": {
+    "payload": {
+      "issue": false,
+      "pull_request": {
+        "title": "feat: dummy PR",
+        "number": 1240,
+        "url": "https://github.com/ExodusMovement/exodus-mobile/pull/1240",
+        "body": "## Summary\nblah blah blah\nCloses: https://app.asana.com/0/120000000/1240, https://app.asana.com/0/120000000/1241, https://app.asana.com/0/120000001/1242, https://app.asana.com/0/120000001/1243",
+        "merged": false
+      },
+      "action": "opened"
+    },
+    "repo": {
+      "owner": "Someone",
+      "repo": "exodus-mobile"
+    }
+  },
+  "newBody": {
+    "body": "## Summary\nblah blah blah\nCloses: [this Asana task](https://app.asana.com/0/120000000/1240) & [this Asana task](https://app.asana.com/0/120000000/1241) & [this Asana task](https://app.asana.com/0/120000001/1242) & [this Asana task](https://app.asana.com/0/120000001/1243).",
+    "owner": "Someone",
+    "pull_number": 1240,
+    "repo": "exodus-mobile"
+  }
+}

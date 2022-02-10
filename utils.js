@@ -145,6 +145,7 @@ const utils = (core, github, githubToken, asanaToken) => {
     }
   }
 
+  // Similar to moveTaskToSection, but different use cases.
   const moveAsanaTasksToSection = async (tasks, projectSectionPairs) => {
     if (!tasks || !tasks.length) return
     try {
@@ -207,7 +208,7 @@ const utils = (core, github, githubToken, asanaToken) => {
     await addAsanaComment(core, asanaToken, tasks, comment)
   }
 
-  const getAsanaShortIds = (body, commentPrefixes) => {
+  const getAsanaIds = (body, commentPrefixes) => {
     if (!body) return null
 
     body = body.replace(/ /g, '') // raw body
@@ -216,16 +217,56 @@ const utils = (core, github, githubToken, asanaToken) => {
     while (lines.length > 0) {
       const line = lines.shift()
       if (startsWithAnyPrefix(line, commentPrefixes)) {
-        const resp = []
+        const taskIds = []
+        const tasksByprojectId = {} // Contains a list of task IDs per project ID.
         let matches
         const reg = RegExp('https://app.asana.com/[0-9]/[0-9]*/[0-9]*', 'g')
         while ((matches = reg.exec(line)) !== null) {
-          resp.push(...matches[0].split('/').slice(-1))
+          const taskId = matches[0].split('/').slice(-1)[0]
+          const projectId = matches[0].split('/').slice(-2)[0]
+          taskIds.push(taskId)
+          if (!tasksByprojectId[projectId]) {
+            tasksByprojectId[projectId] = []
+          }
+          tasksByprojectId[projectId].push(taskId)
         }
-        return resp
+        return [taskIds, tasksByprojectId]
       }
     }
-    return []
+    return [[], []]
+  }
+
+  const getSectionsFromProjects = async (tasksByProjectId) => {
+    return await Promise.all(
+      Object.keys(tasksByProjectId).map(async (projectId) => {
+        try {
+          const { data } = await fetch(asanaToken)(
+            `projects/${projectId}/sections`,
+          ).get()
+          return { projectId, sections: data }
+        } catch (err) {
+          core.error(`Failed to fetch project ${projectId}`)
+          return {}
+        }
+      }),
+    )
+  }
+
+  const moveTaskToSection = async (tasksByProjectId, sectionIdByProjects) => {
+    return Promise.all(
+      sectionIdByProjects.map((project) => {
+        const { projectId, section } = project
+        const tasksToUpdate = tasksByProjectId[projectId]
+        if (!tasksToUpdate) return
+        return tasksToUpdate.map((taskId) =>
+          fetch(asanaToken)(`sections/${section}/addTask`).post({
+            data: {
+              task: taskId,
+            },
+          }),
+        )
+      }),
+    )
   }
 
   return {
@@ -235,7 +276,9 @@ const utils = (core, github, githubToken, asanaToken) => {
     moveAsanaTasksToSection,
     getMatchingAsanaTasks,
     addGithubPrToAsanaTask,
-    getAsanaShortIds,
+    getAsanaIds,
+    moveTaskToSection,
+    getSectionsFromProjects,
   }
 }
 
