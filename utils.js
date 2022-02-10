@@ -238,17 +238,15 @@ const utils = (core, github, githubToken, asanaToken) => {
   const getSectionsFromProjects = async (tasksByProjectId) => {
     return await Promise.all(
       Object.keys(tasksByProjectId).map(async (projectId) => {
-        const resp = await fetch(asanaToken)(
-          `projects/${projectId}/sections`,
-        ).get()
-        if (resp.status === 200) {
-          return { projectId, sections: resp.data }
+        try {
+          const { data } = await fetch(asanaToken)(
+            `projects/${projectId}/sections`,
+          ).get()
+          return { projectId, sections: data }
+        } catch (err) {
+          core.error(`Failed to fetch project ${projectId}`)
+          return {}
         }
-
-        core.error(
-          `Failed to fetch project ${projectId}: ${resp.status} ${resp.message}`,
-        )
-        return {}
       }),
     )
   }
