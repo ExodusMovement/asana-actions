@@ -17,7 +17,7 @@
     ],
     "completed": true,
     "permalink_url": "https://app.asana.com/0/120000000/1235",
-    "newSection": "Dummy text - this should not be invoked since the PR was edited, not opened"
+    "newSection": "1201760007804675"
   },
   {
     "gid": "1236",
@@ -28,7 +28,7 @@
       }
     ],
     "permalink_url": "https://app.asana.com/0/120000000/1236",
-    "newSection": "Dummy text - this should not be invoked since the PR was edited, not opened"
+    "newSection": "1201760007804675"
   },
   {
     "gid": "1237",
@@ -39,7 +39,7 @@
       }
     ],
     "permalink_url": "https://app.asana.com/0/120000000/1237",
-    "newSection": "Dummy text - this should not be invoked since the PR was edited, not opened"
+    "newSection": "1201760007804675"
   },
   {
     "gid": "1239",
@@ -116,7 +116,7 @@
       }
     ],
     "permalink_url": "https://app.asana.com/0/120000007/1251",
-    "newSection": "Dummy text - this should not be invoked since the PR was edited, not opened"
+    "newSection": "1201760007804675"
   },
   {
     "gid": "1260",
@@ -127,6 +127,6 @@
       }
     ],
     "permalink_url": "https://app.asana.com/0/120000000/1260",
-    "newSection": "Dummy text - this should not be invoked since the PR was edited, not opened"
+    "newSection": "1201760007804675"
   }
 ]

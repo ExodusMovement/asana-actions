@@ -132,7 +132,7 @@ module.exports = async (core, github) => {
       })
       core.info(JSON.stringify(sectionIdByProjectId))
 
-      if (action === 'opened' && !isDraftPR) {
+      if (!isDraftPR) {
         await utils.moveTaskToSection(tasksByProjectId, sectionIdByProjectId)
       }
     }
