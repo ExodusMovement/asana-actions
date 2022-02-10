@@ -60,4 +60,16 @@ describe('Asana Actions Workflow', () => {
   it('Should do nothing if PR does not use a valid prefix', async () => {
     await createAsanaActionsWorkflow(core, createGithub(1238))
   })
+
+  it('Should move multiple tasks to Under Review section', async () => {
+    await createAsanaActionsWorkflow(core, createGithub(1240))
+  })
+
+  it('Should move one task to Under Review section and no-op for invalid section', async () => {
+    await createAsanaActionsWorkflow(core, createGithub(1250))
+  })
+
+  it('Should not update task section if its a draft', async () => {
+    await createAsanaActionsWorkflow(core, createGithub(1260))
+  })
 })

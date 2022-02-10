@@ -1,4 +1,5 @@
 const fixture = require('../tests/fixtures/asana.json')
+const projectsFixture = require('../tests/fixtures/asana-projects.json')
 
 const getTaskFromURL = (url) => {
   const taskId = /[0-9]+/.exec(url)[0]
@@ -10,6 +11,11 @@ const getTaskComments = (url) => {
   return {
     data: task.comments ?? [],
   }
+}
+
+const getProject = (url) => {
+  const projectId = /[0-9]+/.exec(url)[0]
+  return projectsFixture.find((p) => p.projectId === projectId)
 }
 
 const getTasks = (url) => {
@@ -28,7 +34,18 @@ const postTasks = (url, { data }) => {
 
 const putTask = (url, { data }) => {
   const task = getTaskFromURL(url)
-  expect(task.completed).toEqual(data.completed)
+
+  // Compare what data has vs what's in the fixture
+  expect(data.completed).toEqual(task.completed)
+  expect(task.newSection).toEqual(data.assignee_section)
+}
+
+const getProjectSections = (url) => {
+  const project = getProject(url)
+  return {
+    status: 200,
+    data: project.sections,
+  }
 }
 
 const fetch = () => (url) => ({
@@ -38,6 +55,8 @@ const fetch = () => (url) => ({
         return getTaskComments(url)
       case /tasks/.test(url):
         return getTasks(url)
+      case /projects/.test(url):
+        return getProjectSections(url)
       default:
         throw new Error(`unknown url ${url}`)
     }

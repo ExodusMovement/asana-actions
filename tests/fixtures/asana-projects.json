@@ -1,0 +1,42 @@
+[
+  {
+    "projectId": "120000000",
+    "sections": [
+      {
+        "gid": "1201760007804672",
+        "name": "Blocked",
+        "resource_type": "section"
+      },
+      {
+        "gid": "1201760007804675",
+        "name": "Under Review",
+        "resource_type": "section"
+      }
+    ]
+  },
+  {
+    "projectId": "120000001",
+    "sections": [
+      {
+        "gid": "1201760007800982",
+        "name": "Blocked",
+        "resource_type": "section"
+      },
+      {
+        "gid": "1201760007808721",
+        "name": "Under Review",
+        "resource_type": "section"
+      }
+    ]
+  },
+  {
+    "projectId": "120000007",
+    "sections": [
+      {
+        "gid": "1201760007800982",
+        "name": "Hopefuly no section calls like this :p",
+        "resource_type": "section"
+      }
+    ]
+  }
+]
