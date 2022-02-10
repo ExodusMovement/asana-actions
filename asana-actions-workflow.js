@@ -14,6 +14,7 @@ module.exports = async (core, github) => {
   const isIssue = !!github.context.payload.issue
   const pr = github.context.payload.pull_request || github.context.payload.issue
   const action = github.context.payload.action
+  const isDraftPR = pr.draft
 
   if (!asanaToken) {
     throw { message: 'ASANA_TOKEN not set' }
@@ -80,7 +81,11 @@ module.exports = async (core, github) => {
     }
   }
 
-  const [taskIds] = utils.getAsanaIds(pr.body, commentPrefixes)
+  const [taskIds, tasksByProjectId] = utils.getAsanaIds(
+    pr.body,
+    commentPrefixes,
+  )
+
   let tasks
   if (action === 'opened' || action === 'edited') {
     if (/\[this Asana task\]/.test(pr.body)) {
@@ -105,6 +110,29 @@ module.exports = async (core, github) => {
       // only when opened and asana link not found so we can have the PR link (comment) as soon as the first PR action
       await utils.addGithubPrToAsanaTask(tasks, pr.title, pr.html_url || pr.url)
       core.info('Modified PR body with asana link')
+
+      // Get all sections for all tasks (there might be tasks from different projects).
+      const sectionsByProjects = await utils.getSectionsFromProjects(
+        tasksByProjectId,
+      )
+
+      // https://developers.asana.com/docs/get-sections-in-a-project
+      // Get section id for Under Review and group them by project.
+      const sectionIdByProjectId = sectionsByProjects.map((project) => {
+        const underReviewSection = project.sections?.find((section) =>
+          /Under Review/i.test(section.name),
+        )
+        return underReviewSection
+          ? {
+              projectId: project.projectId,
+              section: underReviewSection.gid,
+            }
+          : {}
+      })
+
+      if (action === 'opened' && !isDraftPR) {
+        await utils.moveTaskToSection(tasksByProjectId, sectionIdByProjectId)
+      }
     }
 
     if (action === 'opened' && onOpenAction) {

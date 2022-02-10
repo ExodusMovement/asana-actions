@@ -216,18 +216,58 @@ const utils = (core, github, githubToken, asanaToken) => {
     while (lines.length > 0) {
       const line = lines.shift()
       if (startsWithAnyPrefix(line, commentPrefixes)) {
-        const taskIds = new Set() // To avoid duplicates values.
-        const projectIds = new Set() // To avoid duplicates values.
+        const taskIds = []
+        const tasksByprojectId = {} // Contains a list of task IDs per project ID.
         let matches
         const reg = RegExp('https://app.asana.com/[0-9]/[0-9]*/[0-9]*', 'g')
         while ((matches = reg.exec(line)) !== null) {
-          taskIds.add(...matches[0].split('/').slice(-1))
-          projectIds.add(...matches[0].split('/').slice(-2))
+          const taskId = matches[0].split('/').slice(-1)[0]
+          const projectId = matches[0].split('/').slice(-2)[0]
+          taskIds.push(taskId)
+          if (!tasksByprojectId[projectId]) {
+            tasksByprojectId[projectId] = []
+          }
+          tasksByprojectId[projectId].push(taskId)
         }
-        return [Array.from(taskIds), Array.from(projectIds)]
+        return [taskIds, tasksByprojectId]
       }
     }
     return [[], []]
+  }
+
+  const getSectionsFromProjects = async (tasksByProjectId) => {
+    return await Promise.all(
+      Object.keys(tasksByProjectId).map(async (projectId) => {
+        const resp = await fetch(asanaToken)(
+          `projects/${projectId}/sections`,
+        ).get()
+        if (resp.status === 200) {
+          return { projectId, sections: resp.data }
+        }
+
+        core.error(
+          `Failed to fetch project ${projectId}: ${resp.status} ${resp.message}`,
+        )
+        return {}
+      }),
+    )
+  }
+
+  const moveTaskToSection = async (tasksByProjectId, sectionIdByProjects) => {
+    return Promise.all(
+      sectionIdByProjects.map((project) => {
+        const { projectId, section } = project
+        const tasksToUpdate = tasksByProjectId[projectId]
+        if (!tasksToUpdate) return
+        return tasksToUpdate.map((taskId) =>
+          fetch(asanaToken)(`/tasks/${taskId}`).put({
+            data: {
+              assignee_section: section,
+            },
+          }),
+        )
+      }),
+    )
   }
 
   return {
@@ -238,6 +278,8 @@ const utils = (core, github, githubToken, asanaToken) => {
     getMatchingAsanaTasks,
     addGithubPrToAsanaTask,
     getAsanaIds,
+    moveTaskToSection,
+    getSectionsFromProjects,
   }
 }
 
