@@ -115,6 +115,7 @@ module.exports = async (core, github) => {
       const sectionsByProjects = await utils.getSectionsFromProjects(
         tasksByProjectId,
       )
+      core.info(JSON.stringify(sectionsByProjects))
 
       // https://developers.asana.com/docs/get-sections-in-a-project
       // Get section id for Under Review and group them by project.
@@ -129,6 +130,7 @@ module.exports = async (core, github) => {
             }
           : {}
       })
+      core.info(JSON.stringify(sectionIdByProjectId))
 
       if (action === 'opened' && !isDraftPR) {
         await utils.moveTaskToSection(tasksByProjectId, sectionIdByProjectId)
