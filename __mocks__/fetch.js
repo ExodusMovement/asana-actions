@@ -43,7 +43,6 @@ const putTask = (url, { data }) => {
 const getProjectSections = (url) => {
   const project = getProject(url)
   return {
-    status: 200,
     data: project.sections,
   }
 }
