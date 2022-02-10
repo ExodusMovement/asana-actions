@@ -130,7 +130,7 @@ module.exports = async (core, github) => {
           : {}
       })
 
-      if (action === 'opened' && !isDraftPR) {
+      if (!isDraftPR) {
         await utils.moveTaskToSection(tasksByProjectId, sectionIdByProjectId)
       }
     }
