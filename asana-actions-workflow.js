@@ -15,6 +15,8 @@ module.exports = async (core, github) => {
   const pr = github.context.payload.pull_request || github.context.payload.issue
   const action = github.context.payload.action
 
+  console.log(JSON.stringify(github.context))
+
   if (!asanaToken) {
     throw { message: 'ASANA_TOKEN not set' }
   }
