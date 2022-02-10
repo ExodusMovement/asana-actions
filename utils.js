@@ -256,14 +256,24 @@ const utils = (core, github, githubToken, asanaToken) => {
       sectionIdByProjects.map((project) => {
         const { projectId, section } = project
         const tasksToUpdate = tasksByProjectId[projectId]
+        core.info('params')
+        core.info(
+          JSON.stringify(tasksByProjectId),
+          JSON.stringify(sectionIdByProjects),
+        )
+
+        core.info('\n tasks to update', JSON.stringify(tasksToUpdate))
         if (!tasksToUpdate) return
-        return tasksToUpdate.map((taskId) =>
-          fetch(asanaToken)(`/tasks/${taskId}`).put({
+        return tasksToUpdate.map((taskId) => {
+          console.log(
+            `\n fetching /tasks/${taskId} with  assignee_section: ${section},`,
+          )
+          return fetch(asanaToken)(`/tasks/${taskId}`).put({
             data: {
               assignee_section: section,
             },
-          }),
-        )
+          })
+        })
       }),
     )
   }
