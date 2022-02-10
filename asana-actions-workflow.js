@@ -119,7 +119,7 @@ module.exports = async (core, github) => {
       // https://developers.asana.com/docs/get-sections-in-a-project
       // Get section id for Under Review and group them by project.
       const sectionIdByProjectId = sectionsByProjects.map((project) => {
-        const underReviewSection = project.sections?.find((section) =>
+        const underReviewSection = project.sections.find((section) =>
           /Under Review/i.test(section.name),
         )
         return underReviewSection

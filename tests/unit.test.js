@@ -91,7 +91,7 @@ describe('Unit tests for getting  ids', () => {
     const commentPrefix = ['closes:', 'fixes:']
     let body =
       '## Summary\nFooo\ncloses: https://app.asana.com/0/120000000/123456789 https://app.asana.com/0/120000001/123456780 https://app.asana.com/0/120000002/123456781'
-    let [taskIds, projectIds] = utils.getAsanaIds(body, commentPrefix)
+    const [taskIds, projectIds] = utils.getAsanaIds(body, commentPrefix)
     expect(taskIds).toEqual(['123456789', '123456780', '123456781'])
     expect(projectIds).toEqual({
       120000000: ['123456789'],
@@ -100,11 +100,10 @@ describe('Unit tests for getting  ids', () => {
     })
 
     body =
-      '## Summary\nFooo\nfixes: https://app.asana.com/0/120000000/123456789 https://app.asana.com/0/120000001/123456780 https://app.asana.com/0/120000002/123456781'[
-        (taskIds, projectIds)
-      ] = utils.getAsanaIds(body, commentPrefix)
-    expect(taskIds).toEqual(['123456789', '123456780', '123456781'])
-    expect(projectIds).toEqual({
+      '## Summary\nFooo\nfixes: https://app.asana.com/0/120000000/123456789 https://app.asana.com/0/120000001/123456780 https://app.asana.com/0/120000002/123456781'
+    const [newTaskIds, newProjectIds] = utils.getAsanaIds(body, commentPrefix)
+    expect(newTaskIds).toEqual(['123456789', '123456780', '123456781'])
+    expect(newProjectIds).toEqual({
       120000000: ['123456789'],
       120000001: ['123456780'],
       120000002: ['123456781'],
