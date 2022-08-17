@@ -1,7 +1,7 @@
 jest.setTimeout(30000)
 const createAsanaActionsWorkflow = require('../asana-actions-workflow')
-const githubFixture = require('./fixtures/github')
 const core = require('./github-core')
+const githubFixture = require('./fixtures/github')
 
 const getPR = (number) =>
   githubFixture.find((gh) => gh.context.payload.pull_request.number === number)

@@ -1,12 +1,10 @@
 {
   "name": "asana-actions",
-  "private": "true",
   "version": "4.2.0",
   "description": "",
   "main": "asana.js",
   "scripts": {
-    "test": "jest",
-    "publish": "lerna publish"
+    "test": "yarn run jest"
   },
   "repository": {
     "type": "git",

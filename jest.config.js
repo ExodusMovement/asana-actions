@@ -1,3 +1,5 @@
 module.exports = {
-  setupFiles: ['./tests/mocks.js'],
+  rootDir: './',
+  setupFiles: ['./mocks.js'],
+  testMatch: ['<rootDir>/**/*.test.js'],
 }
