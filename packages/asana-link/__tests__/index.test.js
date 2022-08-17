@@ -1,5 +1,5 @@
 jest.setTimeout(30000)
-const createAsanaActionsWorkflow = require('../asana-actions-workflow')
+const createAsanaActionsWorkflow = require('../src/asana-actions-workflow')
 const core = require('./github-core')
 const githubFixture = require('./fixtures/github')
 

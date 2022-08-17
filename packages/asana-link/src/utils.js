@@ -1,5 +1,5 @@
 const xmlescape = require('xml-escape')
-const fetch = require('../../fetch')
+const fetch = require('../../../fetch')
 
 const COMMENT_PAGE_SIZE = 25
 const PULL_REQUEST_PREFIX = 'Linked GitHub PR:'
