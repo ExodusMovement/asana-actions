@@ -1,0 +1,26 @@
+{
+  "name": "asana-milestone",
+  "version": "0.0.0",
+  "description": "> TODO: description",
+  "author": "Federico Ponce de Leon <federico.po@exodus.io>",
+  "homepage": "https://github.com/ExodusMovement/asana-actions/tree/main/packages/asana-milestone#readme",
+  "license": "ISC",
+  "main": "lib/asana-milestone.js",
+  "directories": {
+    "src": "src",
+    "test": "__tests__"
+  },
+  "files": [
+    "src"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ExodusMovement/asana-actions.git"
+  },
+  "scripts": {
+    "test": "echo \"Error: run tests from root\" && exit 1"
+  },
+  "bugs": {
+    "url": "https://github.com/ExodusMovement/asana-actions/issues"
+  }
+}
