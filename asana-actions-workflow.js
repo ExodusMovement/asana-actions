@@ -11,6 +11,8 @@ module.exports = async (core, github) => {
   const onMergeAction = core.getInput('on_merge_action') || ACTION_CLOSE_PREFIX
   const commentPrefixes = ['closes:', 'fixes:']
 
+  console.log(github)
+  console.log(JSON.stringify(github))
   const isIssue = !!github.context.payload.issue
   const pr = github.context.payload.pull_request || github.context.payload.issue
   const action = github.context.payload.action
