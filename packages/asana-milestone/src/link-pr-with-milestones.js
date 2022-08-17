@@ -4,6 +4,8 @@ module.exports = async (core, github) => {
   // TODO: abstract to constants and reuse from asana-link.
   const commentPrefixes = ['closes:', 'fixes:']
 
+  console.log(github)
+  console.log(JSON.stringify(github))
   const isIssue = !!github.context.payload.issue
   const pr = github.context.payload.pull_request || github.context.payload.issue
   const action = github.context.payload.action
