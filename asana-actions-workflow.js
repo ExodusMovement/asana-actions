@@ -1,3 +1,4 @@
+const { mapValuesAsync } = require('@exodus/basic-utils')
 const createUtils = require('./utils')
 
 const ACTION_CLOSE_PREFIX = 'CLOSE'
@@ -7,15 +8,19 @@ module.exports = async (core, github) => {
   const githubToken = core.getInput('github_token')
   const asanaToken = core.getInput('asana_token')
   const onOpenAction = core.getInput('on_open_action')
+  const onMilestone = core.getInput('assign_milestone')
   const failOnNoTask = core.getInput('fail_on_no_task')
   const onMergeAction = core.getInput('on_merge_action') || ACTION_CLOSE_PREFIX
+  const githubMilestoneRegex =
+    core.getInput('gh_milestone_regex') || ACTION_CLOSE_PREFIX
+  const asanaMilestoneRegex =
+    core.getInput('asana_milestone_regex') || ACTION_CLOSE_PREFIX
   const commentPrefixes = ['closes:', 'fixes:']
 
-  console.log(github)
-  console.log(JSON.stringify(github))
   const isIssue = !!github.context.payload.issue
   const pr = github.context.payload.pull_request || github.context.payload.issue
   const action = github.context.payload.action
+  const milestone = github.context.payload.milestone
   const isDraftPR = pr.draft
 
   if (!asanaToken) {
@@ -147,5 +152,26 @@ module.exports = async (core, github) => {
     if (onMergeAction) {
       await doAction(tasks, onMergeAction)
     }
+  } else if (action === 'milestoned' || action === 'demilestoned') {
+    tasks = await lookupTasks(taskIds)
+    // TODO: maybe on !milestone we need to take action.
+    if (!tasks || !tasks.length || !milestone || !onMilestone) return
+
+    const milestoneId = milestone.title
+    core.info(`Found milestone ${milestoneId}`)
+    const { tasksById, errors } = await utils.assignMilestoneToTasks({
+      tasks: tasks.filter((t) => utils.isParentTask(t)),
+      milestone: milestoneId,
+      ghMilestoneRegex: gh_milestone,
+      asanaMilestoneRegex: asana_milestone_regex,
+    })
+
+    Object.keys(errors).forEach((taskId) =>
+      core.error(`${taskId}: ${errors[taskId]}`),
+    )
+
+    await mapValuesAsync(tasksById, (data, id) =>
+      utils.updateTask({ id, data }),
+    )
   }
 }

@@ -203,4 +203,68 @@ describe('Unit tests for fetching sections', () => {
       },
     ])
   })
+
+  it('Should return emtpy tasks and errors', () => {
+    const { taskById, errors } = utils.assignMilestoneToTasks({
+      tasks: [],
+      milestone: '',
+    })
+    expect(taskById).toEqual({})
+    expect(errors).toEqual({})
+  })
+
+  // it('Should return emtpy tasks and errors', () => {
+  //   const { taskById, errors } = utils.assignMilestoneToTasks({
+  //     tasks: [],
+  //     milestone: '',
+  //   })
+  //   expect(taskById).toEqual({})
+  //   expect(errors).toEqual({})
+  // })
+})
+
+describe('Unit tests for getting field value', () => {
+  it('Should return field value for v08.20', () => {
+    const milestone = 'v08.20'
+    const field = {
+      enum_options: [
+        {
+          gid: '1234',
+          name: 'v07.20',
+        },
+        {
+          gid: '5678',
+          name: 'v08.20',
+        },
+        {
+          gid: '9012',
+          name: 'v08.30',
+        },
+      ],
+    }
+    const fieldValue = utils.getTaskFieldValue({ field, milestone })
+    expect(fieldValue.gid).toBe('5678')
+  })
+
+  it('Should return field value for V08.20 (uppercase)', () => {
+    const milestone = 'V08.20'
+    const field = {
+      enum_options: [
+        {
+          gid: '1234',
+          name: 'v07.20',
+        },
+        {
+          gid: '5678',
+          name: 'v08.20',
+        },
+        {
+          gid: '9012',
+          name: 'v08.30',
+        },
+      ],
+    }
+    const fieldValue = utils.getTaskFieldValue({ field, milestone })
+    expect(fieldValue.gid).toBe('5678')
+  })
 })
