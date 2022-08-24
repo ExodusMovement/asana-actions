@@ -161,8 +161,12 @@ module.exports = async (core, github) => {
     // TODO: maybe on !milestone we need to take action.
     if (!tasks || !tasks.length || disableMilestone) return
 
-    const milestoneId = milestone.title
-    core.info(`Found milestone ${milestoneId}`)
+    const milestoneId = milestone?.title
+    core.info(
+      milestoneId
+        ? `Found milestone ${milestoneId}`
+        : 'Will cleanup milestone in task(s)',
+    )
     const { taskById = {}, errors = {} } = await utils.assignMilestoneToTasks({
       milestone: milestoneId,
       githubMilestoneRegex: RegExp(githubMilestoneRegex, 'i'),
