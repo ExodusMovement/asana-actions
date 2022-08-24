@@ -157,12 +157,18 @@ module.exports = async (core, github) => {
       await doAction(tasks, onMergeAction)
     }
   } else if (action === 'milestoned' || action === 'demilestoned') {
+    const isMilestoned = action === 'milestoned'
     tasks = (await lookupTasks(taskIds)).filter((t) => utils.isParentTask(t))
     // TODO: maybe on !milestone we need to take action.
     if (!tasks || !tasks.length || disableMilestone) return
     core.info(`${JSON.stringify(milestone)}, ${action}`)
 
-    const milestoneId = action === 'demilestoned' ? null : milestone.title // demilestoned still hold the old value for milestone.
+    const milestoneId = isMilestoned ? milestone.title : null // demilestoned still hold the old value for milestone.
+    if (isMilestoned) {
+      // Changing from milestone X to Y triggers demilestoned and milestone at the same time
+      // And it sometimes end up setting it first and then cleaning it up.
+      await new Promise((resolve) => setTimeout(resolve, 15000))
+    }
     core.info(
       milestoneId
         ? `Found milestone ${milestoneId}`
