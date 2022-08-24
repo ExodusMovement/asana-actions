@@ -3,8 +3,10 @@ const createUtils = require('./utils')
 const ACTION_CLOSE_PREFIX = 'CLOSE'
 const ACTION_MOVE_TO_SECTION_PREFIX = 'MOVE_TO_SECTION'
 const ASANA_MILESTONE_FIELD_NAME = 'Target Release Version'
-const GITHUB_MILESTONE_REGEX = '[x.0-9]*$'
-const ASANA_MILESTONE_REGEX = '[x.0-9]*$'
+const GITHUB_MILESTONE_REGEX = '[0-9].*'
+const ASANA_MILESTONE_REGEX = '[0-9].*'
+
+const RUNNING_TESTS = process.env.NODE_ENV === 'test'
 
 module.exports = async (core, github) => {
   const githubToken = core.getInput('github_token')
@@ -164,7 +166,7 @@ module.exports = async (core, github) => {
     core.info(`${JSON.stringify(milestone)}, ${action}`)
 
     const milestoneId = isMilestoned ? milestone.title : null // demilestoned still hold the old value for milestone.
-    if (isMilestoned) {
+    if (isMilestoned && !RUNNING_TESTS) {
       // Changing from milestone X to Y triggers demilestoned and milestone at the same time
       // And it sometimes end up setting it first and then cleaning it up.
       await new Promise((resolve) => setTimeout(resolve, 15000))

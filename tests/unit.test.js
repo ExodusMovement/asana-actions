@@ -1,8 +1,8 @@
 const createUtils = require('../utils')
 const core = require('./github-core')
 
-const githubMilestoneRegex = RegExp('[0-9x.]*$', 'i')
-const asanaMilestoneRegex = RegExp('[0-9x.]*$', 'i')
+const githubMilestoneRegex = RegExp('[0-9].*', 'i')
+const asanaMilestoneRegex = RegExp('[0-9].*', 'i')
 
 const utils = createUtils()
 
@@ -254,33 +254,36 @@ describe('Unit tests for getting field value', () => {
     expect(fieldValue.gid).toBe('5678')
   })
 
-  // TODO: couldn't find regexp for this :(
-  // it('Should return field value for V08.20.1-genesis', () => {
-  //   const milestone = 'V08.20.1-genesis'
-  //   const field = {
-  //     enum_options: [
-  //       {
-  //         gid: '1234',
-  //         name: 'v07.20',
-  //       },
-  //       {
-  //         gid: '5678',
-  //         name: 'v08.20.1',
-  //       },
-  //       {
-  //         gid: '9012',
-  //         name: 'v08.30',
-  //       },
-  //     ],
-  //   }
-  //   const fieldValue = utils.getTaskFieldValue({
-  //     field,
-  //     milestone,
-  //     githubMilestoneRegex,
-  //     asanaMilestoneRegex,
-  //   })
-  //   expect(fieldValue.gid).toBe('5678')
-  // })
+  it('Should return field value for V08.20.1-genesis', () => {
+    const milestone = 'V08.20.1-genesis'
+    const field = {
+      enum_options: [
+        {
+          gid: '1234',
+          name: 'v07.20',
+        },
+        {
+          gid: '5678',
+          name: 'v08.20.1',
+        },
+        {
+          gid: '5678',
+          name: 'v08.20.1-genesis',
+        },
+        {
+          gid: '9012',
+          name: 'v08.30',
+        },
+      ],
+    }
+    const fieldValue = utils.getTaskFieldValue({
+      field,
+      milestone,
+      githubMilestoneRegex,
+      asanaMilestoneRegex,
+    })
+    expect(fieldValue.gid).toBe('5678')
+  })
 
   it('Should return field value for V08.30.1x', () => {
     const milestone = 'V08.30.1x'

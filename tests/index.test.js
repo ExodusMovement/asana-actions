@@ -87,8 +87,7 @@ describe('Asana Actions Workflow', () => {
     await createAsanaActionsWorkflow(core, createGithub(1307))
   })
 
-  // TODO: inspect regexp
-  // it('Should update task milestone with v21.08.20-genesis', async () => {
-  //   await createAsanaActionsWorkflow(core, createGithub(1302))
-  // })
+  it('Should update task milestone with v21.08.20-genesis', async () => {
+    await createAsanaActionsWorkflow(core, createGithub(1302))
+  })
 })
