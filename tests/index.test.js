@@ -66,4 +66,21 @@ describe('Asana Actions Workflow', () => {
   it('Should not update task section if its a draft', async () => {
     await createAsanaActionsWorkflow(core, createGithub(1260))
   })
+
+  it('Should update task milestone with v21.08.20', async () => {
+    await createAsanaActionsWorkflow(core, createGithub(1300))
+  })
+
+  it('Should update task milestone with v21.08.20x', async () => {
+    await createAsanaActionsWorkflow(core, createGithub(1301))
+  })
+
+  it('Should replace milestone v21.08.20 by v21.08.30', async () => {
+    await createAsanaActionsWorkflow(core, createGithub(1303))
+  })
+
+  // TODO: inspect regexp
+  // it('Should update task milestone with v21.08.20-genesis', async () => {
+  //   await createAsanaActionsWorkflow(core, createGithub(1302))
+  // })
 })

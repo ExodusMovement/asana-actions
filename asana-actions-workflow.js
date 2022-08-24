@@ -3,18 +3,23 @@ const createUtils = require('./utils')
 
 const ACTION_CLOSE_PREFIX = 'CLOSE'
 const ACTION_MOVE_TO_SECTION_PREFIX = 'MOVE_TO_SECTION'
+const ASANA_MILESTONE_FIELD_NAME = 'Target Release Version'
+const GITHUB_MILESTONE_REGEX = '[x.0-9]*$'
+const ASANA_MILESTONE_REGEX = '[x.0-9]*$'
 
 module.exports = async (core, github) => {
   const githubToken = core.getInput('github_token')
   const asanaToken = core.getInput('asana_token')
   const onOpenAction = core.getInput('on_open_action')
-  const onMilestone = core.getInput('assign_milestone')
+  const disableMilestone = core.getInput('disable_milestones')
   const failOnNoTask = core.getInput('fail_on_no_task')
   const onMergeAction = core.getInput('on_merge_action') || ACTION_CLOSE_PREFIX
   const githubMilestoneRegex =
-    core.getInput('gh_milestone_regex') || ACTION_CLOSE_PREFIX
+    core.getInput('gh_milestone_regex') || GITHUB_MILESTONE_REGEX
   const asanaMilestoneRegex =
-    core.getInput('asana_milestone_regex') || ACTION_CLOSE_PREFIX
+    core.getInput('asana_milestone_regex') || ASANA_MILESTONE_REGEX
+  const asanaMilestoneFieldName =
+    core.getInput('asana_milestone_field_name') || ASANA_MILESTONE_FIELD_NAME
   const commentPrefixes = ['closes:', 'fixes:']
 
   const isIssue = !!github.context.payload.issue
@@ -153,25 +158,26 @@ module.exports = async (core, github) => {
       await doAction(tasks, onMergeAction)
     }
   } else if (action === 'milestoned' || action === 'demilestoned') {
-    tasks = await lookupTasks(taskIds)
+    tasks = (await lookupTasks(taskIds))?.filter((t) => utils.isParentTask(t))
     // TODO: maybe on !milestone we need to take action.
-    if (!tasks || !tasks.length || !milestone || !onMilestone) return
+    if (!tasks || !tasks.length || !milestone || disableMilestone) return
 
     const milestoneId = milestone.title
     core.info(`Found milestone ${milestoneId}`)
-    const { tasksById, errors } = await utils.assignMilestoneToTasks({
-      tasks: tasks.filter((t) => utils.isParentTask(t)),
+    const { taskById = {}, errors = {} } = await utils.assignMilestoneToTasks({
       milestone: milestoneId,
-      ghMilestoneRegex: gh_milestone,
-      asanaMilestoneRegex: asana_milestone_regex,
+      githubMilestoneRegex: RegExp(githubMilestoneRegex, 'i'),
+      asanaMilestoneRegex: RegExp(asanaMilestoneRegex, 'i'),
+      tasks,
+      asanaMilestoneFieldName,
     })
 
     Object.keys(errors).forEach((taskId) =>
       core.error(`${taskId}: ${errors[taskId]}`),
     )
 
-    await mapValuesAsync(tasksById, (data, id) =>
-      utils.updateTask({ id, data }),
+    await mapValuesAsync(taskById, (data, id) =>
+      utils.updateTask({ id, data: { data } }),
     )
   }
 }

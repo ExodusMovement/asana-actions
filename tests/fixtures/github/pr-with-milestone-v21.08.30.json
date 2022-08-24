@@ -1,0 +1,23 @@
+{
+  "context": {
+    "payload": {
+      "issue": false,
+      "pull_request": {
+        "title": "feat: dummy PR",
+        "number": 1303,
+        "url": "https://github.com/ExodusMovement/exodus-mobile/pull/1303",
+        "body": "## Summary\nblah blah blah\nCloses: [this Asana task](https://app.asana.com/0/120000000/1303)",
+        "merged": false
+      },
+      "action": "milestoned",
+      "milestone": {
+        "title": "v21.08.30"
+      }
+    },
+    "repo": {
+      "owner": "Someone",
+      "repo": "exodus-mobile"
+    }
+  },
+  "newBody": {}
+}

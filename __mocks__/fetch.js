@@ -35,6 +35,11 @@ const postTasks = (url, { data }) => {
 const putTask = (url, { data }) => {
   const task = getTaskFromURL(url)
   expect(data.completed).toEqual(task.completed)
+  if (data.custom_fields) {
+    expect(data.custom_fields[data.gid]).toEqual(
+      task.expected_custom_fields[data.gid],
+    )
+  }
 }
 
 const getProjectSections = (url) => {

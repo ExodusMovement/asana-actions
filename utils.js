@@ -4,7 +4,6 @@ const fetch = require('./fetch')
 const COMMENT_PAGE_SIZE = 25
 const PULL_REQUEST_PREFIX = 'Linked GitHub PR:'
 const PIN_PULL_REQUEST_COMMENTS = true
-const MILESTONE_ASANA_FIELD_NAME = 'Target Release Version' // it's actually.
 
 function timeout(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms))
@@ -87,13 +86,15 @@ const utils = (core, github, githubToken, asanaToken) => {
   const getTaskFieldValue = ({
     field,
     milestone,
-    ghMilestoneRegex,
+    githubMilestoneRegex,
     asanaMilestoneRegex,
   }) => {
+    const ghMilestone = githubMilestoneRegex.exec(milestone)[0]
     return field.enum_options.find(
-      (opt) => opt.name.toUpperCase() === milestone.toUpperCase(),
+      (opt) => asanaMilestoneRegex.exec(opt.name)[0] === ghMilestone,
     )
   }
+
   const getNewPRBody = (body, tasks, commentPrefixes) => {
     const multiTasks = tasks.length > 1
     const linkBody = tasks.reduce((links, task, idx) => {
@@ -143,10 +144,10 @@ const utils = (core, github, githubToken, asanaToken) => {
   }
 
   const updateTask = async ({ id, data }) => {
-    if (!task) {
+    if (!data) {
       throw new Error('Tasks are required to update')
     }
-    return fetch(asanaToken)(`tasks/${id}`).put({ data })
+    return fetch(asanaToken)(`tasks/${id}`).put(data)
   }
 
   const completeAsanaTasks = async (tasks) => {
@@ -295,37 +296,39 @@ const utils = (core, github, githubToken, asanaToken) => {
   const assignMilestoneToTasks = ({
     tasks,
     milestone,
-    ghMilestoneRegex,
+    githubMilestoneRegex,
     asanaMilestoneRegex,
+    asanaMilestoneFieldName,
   }) => {
     const errors = {}
     const taskById = {}
     tasks.forEach((task) => {
       const field = task.custom_fields.find(
-        (field) => field.name === MILESTONE_ASANA_FIELD_NAME,
+        (field) =>
+          field.name.toUpperCase() === asanaMilestoneFieldName.toUpperCase(),
       )
       if (!field) {
         errors[
           task.gid
-        ] = `Task missing custom field ${MILESTONE_ASANA_FIELD_NAME}`
+        ] = `Task missing custom field ${asanaMilestoneFieldName}`
         return
       }
 
       const fieldValue = getTaskFieldValue({
         field,
         milestone,
-        ghMilestoneRegex,
+        githubMilestoneRegex,
         asanaMilestoneRegex,
       })
       if (!fieldValue) {
         errors[
           task.gid
-        ] = `Couldn't find ${milestone} for ${MILESTONE_ASANA_FIELD_NAME}`
+        ] = `Couldn't find ${milestone} for ${asanaMilestoneFieldName}`
         return
       }
 
       // https://developers.asana.com/docs/update-a-task at custom_fields
-      taskById[task.gid] = { [field.gid]: fieldValue.gid }
+      taskById[task.gid] = { custom_fields: { [field.gid]: fieldValue.gid } }
     })
     return { taskById, errors }
   }
