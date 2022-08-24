@@ -7,6 +7,7 @@ const GITHUB_MILESTONE_REGEX = '[x.0-9]*$'
 const ASANA_MILESTONE_REGEX = '[x.0-9]*$'
 
 module.exports = async (core, github) => {
+  console.log('test')
   const githubToken = core.getInput('github_token')
   const asanaToken = core.getInput('asana_token')
   const onOpenAction = core.getInput('on_open_action')
