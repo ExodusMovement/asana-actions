@@ -5,6 +5,7 @@ const COMMENT_PAGE_SIZE = 25
 const PULL_REQUEST_PREFIX = 'Linked GitHub PR:'
 const PIN_PULL_REQUEST_COMMENTS = true
 
+console.log('p')
 function timeout(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms))
 }
