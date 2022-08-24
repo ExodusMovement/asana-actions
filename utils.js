@@ -157,7 +157,7 @@ const utils = (core, github, githubToken, asanaToken) => {
     if (!data) {
       throw new Error('Tasks are required to update')
     }
-    return fetch(asanaToken)(`tasks/${id}`).put(data)
+    return fetch(asanaToken)(`tasks/${id}`).put({ data })
   }
 
   const completeAsanaTasks = async (tasks) => {
@@ -166,9 +166,7 @@ const utils = (core, github, githubToken, asanaToken) => {
       await Promise.all(
         [...tasks].map((task) =>
           updateTask({
-            data: {
-              completed: true,
-            },
+            data: { completed: true },
             id: task.gid,
           }),
         ),

@@ -176,7 +176,7 @@ module.exports = async (core, github) => {
     )
 
     await utils.mapValuesAsync(taskById, (data, id) =>
-      utils.updateTask({ id, data: { data } }),
+      utils.updateTask({ id, data }),
     )
   }
 }
