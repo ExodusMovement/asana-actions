@@ -8,6 +8,8 @@ const ASANA_MILESTONE_REGEX = '[0-9].*'
 
 const RUNNING_TESTS = process.env.NODE_ENV === 'test'
 
+console.log('josh here')
+
 module.exports = async (core, github) => {
   const githubToken = core.getInput('github_token')
   const asanaToken = core.getInput('asana_token')
