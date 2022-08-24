@@ -158,9 +158,9 @@ module.exports = async (core, github) => {
       await doAction(tasks, onMergeAction)
     }
   } else if (action === 'milestoned' || action === 'demilestoned') {
-    tasks = (await lookupTasks(taskIds))?.filter((t) => utils.isParentTask(t))
+    tasks = (await lookupTasks(taskIds)).filter((t) => utils.isParentTask(t))
     // TODO: maybe on !milestone we need to take action.
-    if (!tasks || !tasks.length || !milestone || disableMilestone) return
+    if (!tasks || !tasks.length || disableMilestone) return
 
     const milestoneId = milestone.title
     core.info(`Found milestone ${milestoneId}`)
