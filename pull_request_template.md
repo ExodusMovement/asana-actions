@@ -8,7 +8,7 @@
 Depends on #n.
 
 <!-- If this pull request fixes a bug or resolves a feature request, be sure to link to that issue. If not, delete the next line. -->
-Closes #n.
+Closes: 
 
 ## Test Plan
 
