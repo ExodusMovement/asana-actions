@@ -160,6 +160,7 @@ module.exports = async (core, github) => {
     tasks = (await lookupTasks(taskIds)).filter((t) => utils.isParentTask(t))
     // TODO: maybe on !milestone we need to take action.
     if (!tasks || !tasks.length || disableMilestone) return
+    core.info(`${JSON.stringify(milestone)}, ${action}`)
 
     const milestoneId = action === 'demilestoned' ? null : milestone.title // demilestoned still hold the old value for milestone.
     core.info(
