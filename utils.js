@@ -157,6 +157,7 @@ const utils = (core, github, githubToken, asanaToken) => {
     if (!data) {
       throw new Error('Tasks are required to update')
     }
+    core.info(`Will update task ${id} with ${JSON.stringify({ data })}`)
     return fetch(asanaToken)(`tasks/${id}`).put({ data })
   }
 

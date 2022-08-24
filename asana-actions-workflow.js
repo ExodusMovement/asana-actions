@@ -161,7 +161,7 @@ module.exports = async (core, github) => {
     // TODO: maybe on !milestone we need to take action.
     if (!tasks || !tasks.length || disableMilestone) return
 
-    const milestoneId = milestone ? milestone.title : null
+    const milestoneId = action === 'demilestoned' ? null : milestone.title // demilestoned still hold the old value for milestone.
     core.info(
       milestoneId
         ? `Found milestone ${milestoneId}`
