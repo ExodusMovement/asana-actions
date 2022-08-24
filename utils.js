@@ -100,6 +100,11 @@ const utils = (core, github, githubToken, asanaToken) => {
     asanaMilestoneRegex,
   }) => {
     const ghMilestone = githubMilestoneRegex.exec(milestone)[0]
+    if (!ghMilestone) {
+      // regex doesn't match
+      return null
+    }
+
     return field.enum_options.find(
       (opt) => asanaMilestoneRegex.exec(opt.name)[0] === ghMilestone,
     )
@@ -323,21 +328,26 @@ const utils = (core, github, githubToken, asanaToken) => {
         return
       }
 
-      const fieldValue = getTaskFieldValue({
-        field,
-        milestone,
-        githubMilestoneRegex,
-        asanaMilestoneRegex,
-      })
-      if (!fieldValue) {
-        errors[
-          task.gid
-        ] = `Couldn't find ${milestone} for ${asanaMilestoneFieldName}`
-        return
+      let fieldValue = null
+      if (milestone) {
+        fieldValue = getTaskFieldValue({
+          field,
+          milestone,
+          githubMilestoneRegex,
+          asanaMilestoneRegex,
+        })
+        if (!fieldValue) {
+          errors[
+            task.gid
+          ] = `Couldn't find ${milestone} for ${asanaMilestoneFieldName}`
+          return
+        }
       }
 
       // https://developers.asana.com/docs/update-a-task at custom_fields
-      taskById[task.gid] = { custom_fields: { [field.gid]: fieldValue.gid } }
+      taskById[task.gid] = {
+        custom_fields: { [field.gid]: fieldValue ? fieldValue.gid : null },
+      }
     })
     return { taskById, errors }
   }
