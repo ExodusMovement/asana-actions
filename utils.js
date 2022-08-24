@@ -8,6 +8,16 @@ const PIN_PULL_REQUEST_COMMENTS = true
 function timeout(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms))
 }
+async function mapValuesAsync(object, asyncFn) {
+  return Object.fromEntries(
+    await Promise.all(
+      Object.entries(object).map(async ([key, value]) => [
+        key,
+        await asyncFn(value, key, object),
+      ]),
+    ),
+  )
+}
 
 function stripTaskIds(task) {
   return task.gid
@@ -347,6 +357,7 @@ const utils = (core, github, githubToken, asanaToken) => {
     updateTask,
     isParentTask,
     getTaskFieldValue,
+    mapValuesAsync,
   }
 }
 

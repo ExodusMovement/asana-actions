@@ -1,4 +1,3 @@
-const { mapValuesAsync } = require('@exodus/basic-utils')
 const createUtils = require('./utils')
 
 const ACTION_CLOSE_PREFIX = 'CLOSE'
@@ -176,7 +175,7 @@ module.exports = async (core, github) => {
       core.error(`${taskId}: ${errors[taskId]}`),
     )
 
-    await mapValuesAsync(taskById, (data, id) =>
+    await utils.mapValuesAsync(taskById, (data, id) =>
       utils.updateTask({ id, data: { data } }),
     )
   }
