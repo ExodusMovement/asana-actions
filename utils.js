@@ -8,6 +8,7 @@ const PIN_PULL_REQUEST_COMMENTS = true
 function timeout(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms))
 }
+console.log('p')
 async function mapValuesAsync(object, asyncFn) {
   return Object.fromEntries(
     await Promise.all(
