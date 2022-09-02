@@ -4,6 +4,7 @@
   "description": "",
   "main": "asana.js",
   "scripts": {
+    "build": "ncc build index.js -m",
     "test": "yarn run jest"
   },
   "repository": {
