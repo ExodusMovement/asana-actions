@@ -24,6 +24,7 @@
     "xml-escape": "^1.1.0"
   },
   "devDependencies": {
+    "@vercel/ncc": "^0.34.0",
     "jest": "^27.4.7",
     "prettier": "^2.4.1"
   }
