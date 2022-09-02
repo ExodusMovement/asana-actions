@@ -1,6 +1,6 @@
 const core = require('@actions/core')
 const github = require('@actions/github')
-const asanaActionsWorkflow = require('./asana-actions-workflow')
+const asanaActionsWorkflow = require('./src/asana-actions-workflow')
 
 const run = async () => {
   try {
