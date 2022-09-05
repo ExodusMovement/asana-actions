@@ -176,6 +176,7 @@ module.exports = async (core, github) => {
       tasks,
       asanaMilestoneFieldName,
     })
+    core.info('will update task')
 
     Object.keys(errors).forEach((taskId) =>
       core.error(`${taskId}: ${errors[taskId]}`),

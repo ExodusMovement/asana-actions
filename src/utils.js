@@ -99,15 +99,17 @@ const utils = (core, github, githubToken, asanaToken) => {
     githubMilestoneRegex,
     asanaMilestoneRegex,
   }) => {
-    const ghMilestone = githubMilestoneRegex.exec(milestone)?.[0]
-    if (!ghMilestone) {
+    const ghMilestoneRg = githubMilestoneRegex.exec(milestone)
+    if (!ghMilestoneRg) {
       // regex doesn't match
       return null
     }
+    const ghMilestone = ghMilestoneRg[0]
 
-    return field.enum_options.find(
-      (opt) => asanaMilestoneRegex.exec(opt.name)?.[0] === ghMilestone,
-    )
+    return field.enum_options.find((opt) => {
+      const asanaMilestone = asanaMilestoneRegex.exec(opt.name)
+      return asanaMilestone && asanaMilestone[0] === ghMilestone
+    })
   }
 
   const getNewPRBody = (body, tasks, commentPrefixes) => {
