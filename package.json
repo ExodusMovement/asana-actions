@@ -4,6 +4,7 @@
   "description": "",
   "main": "asana.js",
   "scripts": {
+    "prepare": "husky install",
     "build": "ncc build index.js -m",
     "test": "yarn run jest"
   },
@@ -18,7 +19,6 @@
     "url": "https://github.com/ExodusMovement/asana-actions/issues"
   },
   "homepage": "https://github.com/ExodusMovement/asana-actions#readme",
-  "husky": {},
   "dependencies": {
     "@actions/core": "^1.2.7",
     "@actions/github": "^4.0.0",
