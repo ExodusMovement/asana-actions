@@ -4,6 +4,8 @@
   "description": "",
   "main": "asana.js",
   "scripts": {
+    "prepare": "husky install",
+    "build": "ncc build index.js -m",
     "test": "yarn run jest"
   },
   "repository": {
@@ -24,6 +26,8 @@
     "xml-escape": "^1.1.0"
   },
   "devDependencies": {
+    "@vercel/ncc": "^0.34.0",
+    "husky": "^8.0.1",
     "jest": "^27.4.7",
     "prettier": "^2.4.1"
   }

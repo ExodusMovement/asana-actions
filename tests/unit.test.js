@@ -1,4 +1,4 @@
-const createUtils = require('../utils')
+const createUtils = require('../src/utils')
 const core = require('./github-core')
 
 const githubMilestoneRegex = RegExp('[0-9].*', 'i')
