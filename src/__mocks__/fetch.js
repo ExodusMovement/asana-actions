@@ -1,5 +1,5 @@
-const fixture = require('../tests/fixtures/asana.json')
-const projectsFixture = require('../tests/fixtures/asana-projects.json')
+const fixture = require('../../tests/fixtures/asana.json')
+const projectsFixture = require('../../tests/fixtures/asana-projects.json')
 
 const getTaskFromURL = (url) => {
   const taskId = /[0-9]+/.exec(url)[0]
