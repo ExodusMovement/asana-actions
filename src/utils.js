@@ -99,14 +99,14 @@ const utils = (core, github, githubToken, asanaToken) => {
     githubMilestoneRegex,
     asanaMilestoneRegex,
   }) => {
-    const ghMilestone = githubMilestoneRegex.exec(milestone)[0]
+    const ghMilestone = githubMilestoneRegex.exec(milestone)?.[0]
     if (!ghMilestone) {
       // regex doesn't match
       return null
     }
 
     return field.enum_options.find(
-      (opt) => asanaMilestoneRegex.exec(opt.name)[0] === ghMilestone,
+      (opt) => asanaMilestoneRegex.exec(opt.name)?.[0] === ghMilestone,
     )
   }
 
