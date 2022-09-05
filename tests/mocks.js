@@ -1,1 +1,1 @@
-jest.mock('../fetch')
+jest.mock('../src/fetch')
