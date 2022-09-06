@@ -3,13 +3,14 @@ on:
   issues:
     types: [opened, closed, edited]
   pull_request:
-    types: [opened, closed, edited]
+    types: [opened, closed, edited, milestoned, demilestoned]
+concurrency: ci-${{ github.repository }}
 jobs:
   asana:
     runs-on: ubuntu-latest
     steps:
       - name: Asana Github Link
-        uses: ExodusMovement/asana-actions@4.2.0
+        uses: ExodusMovement/asana-actions@4.4.0-draft_1
         with:
           asana_token: ${{ secrets.ASANA_TOKEN }}
           workspace: ${{ secrets.ASANA_WORKSPACE_ID }}

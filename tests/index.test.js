@@ -1,5 +1,5 @@
 jest.setTimeout(30000)
-const createAsanaActionsWorkflow = require('../asana-actions-workflow')
+const createAsanaActionsWorkflow = require('../src/asana-actions-workflow')
 const githubFixture = require('./fixtures/github')
 const core = require('./github-core')
 
@@ -65,5 +65,29 @@ describe('Asana Actions Workflow', () => {
 
   it('Should not update task section if its a draft', async () => {
     await createAsanaActionsWorkflow(core, createGithub(1260))
+  })
+
+  it('Should update task milestone with v21.08.20', async () => {
+    await createAsanaActionsWorkflow(core, createGithub(1300))
+  })
+
+  it('Should update task milestone with v21.08.20x', async () => {
+    await createAsanaActionsWorkflow(core, createGithub(1301))
+  })
+
+  it('Should replace milestone v21.08.20 by v21.08.30', async () => {
+    await createAsanaActionsWorkflow(core, createGithub(1303))
+  })
+
+  it('Should link milestone v21.08.20 in multiple tasks', async () => {
+    await createAsanaActionsWorkflow(core, createGithub(1304))
+  })
+
+  it('Should clean task milestone', async () => {
+    await createAsanaActionsWorkflow(core, createGithub(1307))
+  })
+
+  it('Should update task milestone with v21.08.20-genesis', async () => {
+    await createAsanaActionsWorkflow(core, createGithub(1302))
   })
 })

@@ -128,5 +128,432 @@
     ],
     "permalink_url": "https://app.asana.com/0/120000000/1260",
     "newSection": "1201760007804675"
+  },
+  {
+    "gid": "1300",
+    "modifiedAt": "2022-01-17T16:22:59.135Z",
+    "comments": [
+      {
+        "text": "<strong>Linked GitHub PR:</strong> feat: dummy PR with Fixes prefix\n<a href=\"https://github.com/ExodusMovement/exodus-mobile/pull/1300\"/>"
+      }
+    ],
+    "permalink_url": "https://app.asana.com/0/120000000/1300",
+    "custom_fields": [
+      {
+        "gid": "1001",
+        "enabled": true,
+        "enum_options": [
+          {
+            "gid": "1002",
+            "color": "yellow",
+            "enabled": true,
+            "name": "V21.07.20",
+            "resource_type": "enum_option"
+          },
+          {
+            "gid": "1003",
+            "color": "magenta",
+            "enabled": true,
+            "name": "V21.08.20",
+            "resource_type": "enum_option"
+          },
+          {
+            "gid": "1004",
+            "color": "orange",
+            "enabled": true,
+            "name": "V22.08.25",
+            "resource_type": "enum_option"
+          }
+        ],
+        "enum_value": null,
+        "name": "Target Release Version",
+        "description": "",
+        "display_value": null,
+        "resource_subtype": "enum",
+        "resource_type": "custom_field",
+        "type": "enum"
+      }
+    ],
+    "expected_custom_fields": {
+      "1001": "1003"
+    }
+  },
+  {
+    "gid": "1301",
+    "modifiedAt": "2022-01-17T16:22:59.135Z",
+    "comments": [
+      {
+        "text": "<strong>Linked GitHub PR:</strong> feat: dummy PR with Fixes prefix\n<a href=\"https://github.com/ExodusMovement/exodus-mobile/pull/1301\"/>"
+      }
+    ],
+    "permalink_url": "https://app.asana.com/0/120000000/1301",
+    "custom_fields": [
+      {
+        "gid": "1001",
+        "enabled": true,
+        "enum_options": [
+          {
+            "gid": "1002",
+            "color": "yellow",
+            "enabled": true,
+            "name": "V21.07.20",
+            "resource_type": "enum_option"
+          },
+          {
+            "gid": "1003",
+            "color": "magenta",
+            "enabled": true,
+            "name": "V21.08.20",
+            "resource_type": "enum_option"
+          },
+          {
+            "gid": "1004",
+            "color": "orange",
+            "enabled": true,
+            "name": "V21.08.20x",
+            "resource_type": "enum_option"
+          }
+        ],
+        "enum_value": null,
+        "name": "Target Release Version",
+        "description": "",
+        "display_value": null,
+        "resource_subtype": "enum",
+        "resource_type": "custom_field",
+        "type": "enum"
+      }
+    ],
+    "expected_custom_fields": {
+      "1001": "1004"
+    }
+  },
+  {
+    "gid": "1302",
+    "modifiedAt": "2022-01-17T16:22:59.135Z",
+    "comments": [
+      {
+        "text": "<strong>Linked GitHub PR:</strong> feat: dummy PR with Fixes prefix\n<a href=\"https://github.com/ExodusMovement/exodus-mobile/pull/1302\"/>"
+      }
+    ],
+    "permalink_url": "https://app.asana.com/0/120000000/1302",
+    "custom_fields": [
+      {
+        "gid": "1001",
+        "enabled": true,
+        "enum_options": [
+          {
+            "gid": "1002",
+            "color": "yellow",
+            "enabled": true,
+            "name": "V21.07.20",
+            "resource_type": "enum_option"
+          },
+          {
+            "gid": "1003",
+            "color": "magenta",
+            "enabled": true,
+            "name": "V21.08.20",
+            "resource_type": "enum_option"
+          },
+          {
+            "gid": "1004",
+            "color": "orange",
+            "enabled": true,
+            "name": "V21.08.20x",
+            "resource_type": "enum_option"
+          }
+        ],
+        "enum_value": null,
+        "name": "Target Release Version",
+        "description": "",
+        "display_value": null,
+        "resource_subtype": "enum",
+        "resource_type": "custom_field",
+        "type": "enum"
+      }
+    ],
+    "expected_custom_field": {
+      "1001": "1004"
+    }
+  },
+  {
+    "gid": "1303",
+    "modifiedAt": "2022-01-17T16:22:59.135Z",
+    "comments": [
+      {
+        "text": "<strong>Linked GitHub PR:</strong> feat: dummy PR with Fixes prefix\n<a href=\"https://github.com/ExodusMovement/exodus-mobile/pull/1303\"/>"
+      }
+    ],
+    "permalink_url": "https://app.asana.com/0/120000000/1303",
+    "custom_fields": [
+      {
+        "gid": "1001",
+        "enabled": true,
+        "enum_options": [
+          {
+            "gid": "1002",
+            "color": "yellow",
+            "enabled": true,
+            "name": "V21.07.20",
+            "resource_type": "enum_option"
+          },
+          {
+            "gid": "1003",
+            "color": "magenta",
+            "enabled": true,
+            "name": "V21.08.20",
+            "resource_type": "enum_option"
+          },
+          {
+            "gid": "1004",
+            "color": "orange",
+            "enabled": true,
+            "name": "V21.08.20x",
+            "resource_type": "enum_option"
+          },
+          {
+            "gid": "1004",
+            "color": "orange",
+            "enabled": true,
+            "name": "V21.08.30",
+            "resource_type": "enum_option"
+          }
+        ],
+        "enum_value": "1003",
+        "name": "Target Release Version",
+        "description": "",
+        "display_value": null,
+        "resource_subtype": "enum",
+        "resource_type": "custom_field",
+        "type": "enum"
+      }
+    ],
+    "expected_custom_fields": {
+      "1001": "1003"
+    }
+  },
+  {
+    "gid": "1304",
+    "modifiedAt": "2022-01-17T16:22:59.135Z",
+    "comments": [
+      {
+        "text": "<strong>Linked GitHub PR:</strong> feat: dummy PR with Fixes prefix\n<a href=\"https://github.com/ExodusMovement/exodus-mobile/pull/1304\"/>"
+      }
+    ],
+    "permalink_url": "https://app.asana.com/0/120000000/1304",
+    "custom_fields": [
+      {
+        "gid": "1001",
+        "enabled": true,
+        "enum_options": [
+          {
+            "gid": "1002",
+            "color": "yellow",
+            "enabled": true,
+            "name": "V21.07.20",
+            "resource_type": "enum_option"
+          },
+          {
+            "gid": "1003",
+            "color": "magenta",
+            "enabled": true,
+            "name": "V21.08.20",
+            "resource_type": "enum_option"
+          },
+          {
+            "gid": "1004",
+            "color": "orange",
+            "enabled": true,
+            "name": "V21.08.20x",
+            "resource_type": "enum_option"
+          },
+          {
+            "gid": "1004",
+            "color": "orange",
+            "enabled": true,
+            "name": "V21.08.30",
+            "resource_type": "enum_option"
+          }
+        ],
+        "enum_value": "1003",
+        "name": "Target Release Version",
+        "description": "",
+        "display_value": null,
+        "resource_subtype": "enum",
+        "resource_type": "custom_field",
+        "type": "enum"
+      }
+    ],
+    "expected_custom_fields": {
+      "1001": "1003"
+    }
+  },
+  {
+    "gid": "1305",
+    "modifiedAt": "2022-01-17T16:22:59.135Z",
+    "comments": [
+      {
+        "text": "<strong>Linked GitHub PR:</strong> feat: dummy PR with Fixes prefix\n<a href=\"https://github.com/ExodusMovement/exodus-mobile/pull/1305\"/>"
+      }
+    ],
+    "permalink_url": "https://app.asana.com/0/120000000/1305",
+    "custom_fields": [
+      {
+        "gid": "1001",
+        "enabled": true,
+        "enum_options": [
+          {
+            "gid": "1002",
+            "color": "yellow",
+            "enabled": true,
+            "name": "V21.07.20",
+            "resource_type": "enum_option"
+          },
+          {
+            "gid": "1003",
+            "color": "magenta",
+            "enabled": true,
+            "name": "V21.08.20",
+            "resource_type": "enum_option"
+          },
+          {
+            "gid": "1004",
+            "color": "orange",
+            "enabled": true,
+            "name": "V21.08.20x",
+            "resource_type": "enum_option"
+          },
+          {
+            "gid": "1004",
+            "color": "orange",
+            "enabled": true,
+            "name": "V21.08.30",
+            "resource_type": "enum_option"
+          }
+        ],
+        "enum_value": "1003",
+        "name": "Target Release Version",
+        "description": "",
+        "display_value": null,
+        "resource_subtype": "enum",
+        "resource_type": "custom_field",
+        "type": "enum"
+      }
+    ],
+    "expected_custom_fields": {
+      "1001": "1003"
+    }
+  },
+  {
+    "gid": "1306",
+    "modifiedAt": "2022-01-17T16:22:59.135Z",
+    "comments": [
+      {
+        "text": "<strong>Linked GitHub PR:</strong> feat: dummy PR with Fixes prefix\n<a href=\"https://github.com/ExodusMovement/exodus-mobile/pull/1306\"/>"
+      }
+    ],
+    "permalink_url": "https://app.asana.com/0/120000000/1306",
+    "custom_fields": [
+      {
+        "gid": "1001",
+        "enabled": true,
+        "enum_options": [
+          {
+            "gid": "1002",
+            "color": "yellow",
+            "enabled": true,
+            "name": "V21.07.20",
+            "resource_type": "enum_option"
+          },
+          {
+            "gid": "1003",
+            "color": "magenta",
+            "enabled": true,
+            "name": "V21.08.20",
+            "resource_type": "enum_option"
+          },
+          {
+            "gid": "1004",
+            "color": "orange",
+            "enabled": true,
+            "name": "V21.08.20x",
+            "resource_type": "enum_option"
+          },
+          {
+            "gid": "1004",
+            "color": "orange",
+            "enabled": true,
+            "name": "V21.08.30",
+            "resource_type": "enum_option"
+          }
+        ],
+        "enum_value": "1003",
+        "name": "Target Release Version",
+        "description": "",
+        "display_value": null,
+        "resource_subtype": "enum",
+        "resource_type": "custom_field",
+        "type": "enum"
+      }
+    ],
+    "expected_custom_fields": {
+      "1001": "1003"
+    }
+  },
+  {
+    "gid": "1307",
+    "modifiedAt": "2022-01-17T16:22:59.135Z",
+    "comments": [
+      {
+        "text": "<strong>Linked GitHub PR:</strong> feat: dummy PR with Fixes prefix\n<a href=\"https://github.com/ExodusMovement/exodus-mobile/pull/1307\"/>"
+      }
+    ],
+    "permalink_url": "https://app.asana.com/0/120000000/1307",
+    "custom_fields": [
+      {
+        "gid": "1001",
+        "enabled": true,
+        "enum_options": [
+          {
+            "gid": "1002",
+            "color": "yellow",
+            "enabled": true,
+            "name": "V21.07.20",
+            "resource_type": "enum_option"
+          },
+          {
+            "gid": "1003",
+            "color": "magenta",
+            "enabled": true,
+            "name": "V21.08.20",
+            "resource_type": "enum_option"
+          },
+          {
+            "gid": "1004",
+            "color": "orange",
+            "enabled": true,
+            "name": "V21.08.20x",
+            "resource_type": "enum_option"
+          },
+          {
+            "gid": "1004",
+            "color": "orange",
+            "enabled": true,
+            "name": "V21.08.30",
+            "resource_type": "enum_option"
+          }
+        ],
+        "enum_value": "1003",
+        "name": "Target Release Version",
+        "description": "",
+        "display_value": null,
+        "resource_subtype": "enum",
+        "resource_type": "custom_field",
+        "type": "enum"
+      }
+    ],
+    "expected_custom_fields": {
+      "1001": null
+    }
   }
 ]

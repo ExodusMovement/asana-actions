@@ -1,5 +1,8 @@
-const createUtils = require('../utils')
+const createUtils = require('../src/utils')
 const core = require('./github-core')
+
+const githubMilestoneRegex = RegExp('[0-9].*', 'i')
+const asanaMilestoneRegex = RegExp('[0-9].*', 'i')
 
 const utils = createUtils()
 
@@ -202,5 +205,114 @@ describe('Unit tests for fetching sections', () => {
         ],
       },
     ])
+  })
+
+  it('Should return emtpy tasks and errors', () => {
+    const { taskById, errors } = utils.assignMilestoneToTasks({
+      tasks: [],
+      milestone: '',
+    })
+    expect(taskById).toEqual({})
+    expect(errors).toEqual({})
+  })
+
+  // it('Should return emtpy tasks and errors', () => {
+  //   const { taskById, errors } = utils.assignMilestoneToTasks({
+  //     tasks: [],
+  //     milestone: '',
+  //   })
+  //   expect(taskById).toEqual({})
+  //   expect(errors).toEqual({})
+  // })
+})
+
+describe('Unit tests for getting field value', () => {
+  it('Should return field value for v08.20', () => {
+    const milestone = 'v08.20'
+    const field = {
+      enum_options: [
+        {
+          gid: '1234',
+          name: 'v07.20',
+        },
+        {
+          gid: '5678',
+          name: 'v08.20',
+        },
+        {
+          gid: '9012',
+          name: 'v08.30',
+        },
+      ],
+    }
+    const fieldValue = utils.getTaskFieldValue({
+      field,
+      milestone,
+      githubMilestoneRegex,
+      asanaMilestoneRegex,
+    })
+    expect(fieldValue.gid).toBe('5678')
+  })
+
+  it('Should return field value for V08.20.1-genesis', () => {
+    const milestone = 'V08.20.1-genesis'
+    const field = {
+      enum_options: [
+        {
+          gid: '1234',
+          name: 'v07.20',
+        },
+        {
+          gid: '5678',
+          name: 'v08.20.1',
+        },
+        {
+          gid: '5678',
+          name: 'v08.20.1-genesis',
+        },
+        {
+          gid: '9012',
+          name: 'v08.30',
+        },
+      ],
+    }
+    const fieldValue = utils.getTaskFieldValue({
+      field,
+      milestone,
+      githubMilestoneRegex,
+      asanaMilestoneRegex,
+    })
+    expect(fieldValue.gid).toBe('5678')
+  })
+
+  it('Should return field value for V08.30.1x', () => {
+    const milestone = 'V08.30.1x'
+    const field = {
+      enum_options: [
+        {
+          gid: '1234',
+          name: 'v07.20',
+        },
+        {
+          gid: '5678',
+          name: 'v08.20',
+        },
+        {
+          gid: '0011',
+          name: 'v08.30.1',
+        },
+        {
+          gid: '9012',
+          name: 'v08.30.1x',
+        },
+      ],
+    }
+    const fieldValue = utils.getTaskFieldValue({
+      field,
+      milestone,
+      githubMilestoneRegex,
+      asanaMilestoneRegex,
+    })
+    expect(fieldValue.gid).toBe('9012')
   })
 })
