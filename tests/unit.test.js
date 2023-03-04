@@ -18,7 +18,7 @@ describe('Unit tests for creating new body', () => {
 
     const newBody = utils.getNewPRBody(body, tasks, [commentPrefix])
     expect(newBody).toBe(
-      `## Summary\nThis PR blah blah\nCloses: [this Asana task](${tasks[0].permalink_url}).`,
+      `## Summary\nThis PR blah blah\nCloses: [this Asana task](${tasks[0].permalink_url}).`
     )
   })
 
@@ -37,7 +37,7 @@ describe('Unit tests for creating new body', () => {
 
     const newBody = utils.getNewPRBody(body, tasks, [commentPrefix])
     expect(newBody).toBe(
-      `## Summary\nThis PR blah blah\nCloses: [this Asana task](${tasks[0].permalink_url}) & [this Asana task](${tasks[1].permalink_url}).`,
+      `## Summary\nThis PR blah blah\nCloses: [this Asana task](${tasks[0].permalink_url}) & [this Asana task](${tasks[1].permalink_url}).`
     )
   })
 
@@ -56,7 +56,7 @@ describe('Unit tests for creating new body', () => {
 
     const newBody = utils.getNewPRBody(body, tasks, [commentPrefix])
     expect(newBody).toBe(
-      `## Summary\nThis PR blah blah\nCloses: [this Asana task](${tasks[0].permalink_url}) & [this Asana task](${tasks[1].permalink_url}).\n\n## Further Comments\nSomething great here!`,
+      `## Summary\nThis PR blah blah\nCloses: [this Asana task](${tasks[0].permalink_url}) & [this Asana task](${tasks[1].permalink_url}).\n\n## Further Comments\nSomething great here!`
     )
   })
 })
@@ -71,8 +71,7 @@ describe('Unit tests for getting  ids', () => {
 
   it('Should return id when body has one asana link', () => {
     const commentPrefix = 'closes:'
-    const body =
-      '## Summary\nFooo\ncloses: https://app.asana.com/0/120000000/123456789'
+    const body = '## Summary\nFooo\ncloses: https://app.asana.com/0/120000000/123456789'
     const [taskIds, projectIds] = utils.getAsanaIds(body, [commentPrefix])
     expect(taskIds).toEqual(['123456789'])
     expect(projectIds).toEqual({ 120000000: ['123456789'] })
@@ -119,11 +118,7 @@ describe('Unit tests for fetching sections', () => {
     const tasksByProjectId = {
       120000000: ['1234'],
     }
-    const sections = await utils.getSectionsFromProjects(
-      tasksByProjectId,
-      core,
-      '',
-    )
+    const sections = await utils.getSectionsFromProjects(tasksByProjectId, core, '')
     expect(sections).toEqual([
       {
         projectId: '120000000',
@@ -207,8 +202,8 @@ describe('Unit tests for fetching sections', () => {
     ])
   })
 
-  it('Should return emtpy tasks and errors', () => {
-    const { taskById, errors } = utils.assignMilestoneToTasks({
+  it('Should return emtpy tasks and errors', async () => {
+    const { taskById, errors } = await utils.assignMilestoneToTasks({
       tasks: [],
       milestone: '',
     })
@@ -227,7 +222,7 @@ describe('Unit tests for fetching sections', () => {
 })
 
 describe('Unit tests for getting field value', () => {
-  it('Should return field value for v08.20', () => {
+  it('Should return field value for v08.20', async () => {
     const milestone = 'v08.20'
     const field = {
       enum_options: [
@@ -245,7 +240,7 @@ describe('Unit tests for getting field value', () => {
         },
       ],
     }
-    const fieldValue = utils.getTaskFieldValue({
+    const fieldValue = await utils.getTaskFieldValue({
       field,
       milestone,
       githubMilestoneRegex,
@@ -254,7 +249,7 @@ describe('Unit tests for getting field value', () => {
     expect(fieldValue.gid).toBe('5678')
   })
 
-  it('Should return field value for V08.20.1-genesis', () => {
+  it('Should return field value for V08.20.1-genesis', async () => {
     const milestone = 'V08.20.1-genesis'
     const field = {
       enum_options: [
@@ -276,7 +271,7 @@ describe('Unit tests for getting field value', () => {
         },
       ],
     }
-    const fieldValue = utils.getTaskFieldValue({
+    const fieldValue = await utils.getTaskFieldValue({
       field,
       milestone,
       githubMilestoneRegex,
@@ -285,7 +280,7 @@ describe('Unit tests for getting field value', () => {
     expect(fieldValue.gid).toBe('5678')
   })
 
-  it('Should return field value for V08.30.1x', () => {
+  it('Should return field value for V08.30.1x', async () => {
     const milestone = 'V08.30.1x'
     const field = {
       enum_options: [
@@ -307,7 +302,7 @@ describe('Unit tests for getting field value', () => {
         },
       ],
     }
-    const fieldValue = utils.getTaskFieldValue({
+    const fieldValue = await utils.getTaskFieldValue({
       field,
       milestone,
       githubMilestoneRegex,

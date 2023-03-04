@@ -11,11 +11,8 @@ function timeout(ms) {
 async function mapValuesAsync(object, asyncFn) {
   return Object.fromEntries(
     await Promise.all(
-      Object.entries(object).map(async ([key, value]) => [
-        key,
-        await asyncFn(value, key, object),
-      ]),
-    ),
+      Object.entries(object).map(async ([key, value]) => [key, await asyncFn(value, key, object)])
+    )
   )
 }
 
@@ -39,9 +36,7 @@ async function addAsanaComment(core, token, tasks, comment) {
   core.info(`data: ${data}`)
   try {
     await Promise.all(
-      [...tasks].map((task) =>
-        fetch(token)(`tasks/${task.gid}/stories`).post(data),
-      ),
+      [...tasks].map((task) => fetch(token)(`tasks/${task.gid}/stories`).post(data))
     )
     core.info(`commented on task(s) (${tasks.map(stripTaskIds)})`)
   } catch (exc) {
@@ -70,8 +65,7 @@ async function hasPRComments(token, taskId) {
       break
     }
     for (const row of rows) {
-      if (row && row.text && row.text.indexOf(PULL_REQUEST_PREFIX) !== -1)
-        return true
+      if (row && row.text && row.text.indexOf(PULL_REQUEST_PREFIX) !== -1) return true
     }
     if (!rowsData.next_page) return false
     offset = rowsData.next_page.offset
@@ -93,7 +87,7 @@ const utils = (core, github, githubToken, asanaToken) => {
     return !task.parent
   }
 
-  const getTaskFieldValue = ({
+  const getTaskFieldValue = async ({
     field,
     milestone,
     githubMilestoneRegex,
@@ -106,10 +100,19 @@ const utils = (core, github, githubToken, asanaToken) => {
     }
     const ghMilestone = ghMilestoneRg[0]
 
-    return field.enum_options.find((opt) => {
+    const milestoneIdForCustomEnum = field.enum_options.find((opt) => {
       const asanaMilestone = asanaMilestoneRegex.exec(opt.name)
       return asanaMilestone && asanaMilestone[0] === ghMilestone
     })
+
+    if (!milestoneIdForCustomEnum) {
+      const createdFieldValue = await addEnumValueToCustomField({
+        fieldId: field.gid,
+        value: milestone,
+      })
+      return createdFieldValue
+    }
+    return milestoneIdForCustomEnum
   }
 
   const getNewPRBody = (body, tasks, commentPrefixes) => {
@@ -129,9 +132,7 @@ const utils = (core, github, githubToken, asanaToken) => {
     let newBody = ''
     while (lines.length > 0) {
       const line = lines.shift()
-      const prefix = commentPrefixes.find((prefix) =>
-        startsWithPrefix(line, prefix),
-      )
+      const prefix = commentPrefixes.find((prefix) => startsWithPrefix(line, prefix))
       if (prefix) {
         newBody += capitalize(prefix) + ' ' + linkBody
       } else {
@@ -176,8 +177,8 @@ const utils = (core, github, githubToken, asanaToken) => {
           updateTask({
             data: { completed: true },
             id: task.gid,
-          }),
-        ),
+          })
+        )
       )
       core.info(`completed task(s) (${tasks.map(stripTaskIds)})`)
     } catch (exc) {
@@ -195,9 +196,7 @@ const utils = (core, github, githubToken, asanaToken) => {
           projectSectionPairs.map((projectSectionIds) => {
             const [projectId, sectionId] = projectSectionIds.split('/')
             // check if task is in project
-            const taskInProject = task.projects.some(
-              (project) => project.gid === projectId,
-            )
+            const taskInProject = task.projects.some((project) => project.gid === projectId)
             if (taskInProject) {
               // if task is in project, then move to section
               validSectionIds.push(sectionId)
@@ -207,13 +206,11 @@ const utils = (core, github, githubToken, asanaToken) => {
                 },
               })
             }
-          }),
-        ),
+          })
+        )
       )
       core.info(
-        `posted task(s) (${tasks.map(
-          stripTaskIds,
-        )}) to sections/${validSectionIds}/addTask`,
+        `posted task(s) (${tasks.map(stripTaskIds)}) to sections/${validSectionIds}/addTask`
       )
     } catch (exc) {
       core.error(`Error while posting task(s) (${tasks.map(stripTaskIds)})`)
@@ -222,7 +219,7 @@ const utils = (core, github, githubToken, asanaToken) => {
 
   const getMatchingAsanaTasks = async (ids) => {
     const responses = await Promise.all(
-      ids.map(async (taskId) => fetch(asanaToken)(`tasks/${taskId}`).get()),
+      ids.map(async (taskId) => fetch(asanaToken)(`tasks/${taskId}`).get())
     )
     return responses.map(({ data }) => data)
   }
@@ -280,15 +277,13 @@ const utils = (core, github, githubToken, asanaToken) => {
     return await Promise.all(
       Object.keys(tasksByProjectId).map(async (projectId) => {
         try {
-          const { data } = await fetch(asanaToken)(
-            `projects/${projectId}/sections`,
-          ).get()
+          const { data } = await fetch(asanaToken)(`projects/${projectId}/sections`).get()
           return { projectId, sections: data }
         } catch (err) {
           core.error(`Failed to fetch project ${projectId}`)
           return {}
         }
-      }),
+      })
     )
   }
 
@@ -303,13 +298,21 @@ const utils = (core, github, githubToken, asanaToken) => {
             data: {
               task: taskId,
             },
-          }),
+          })
         )
-      }),
+      })
     )
   }
 
-  const assignMilestoneToTasks = ({
+  const addEnumValueToCustomField = async ({ fieldId, value }) => {
+    const data = {
+      name: value,
+      enabled: true,
+    }
+    return fetch(token)(`custom_fields/${fieldId}/enum_options`).post(data)
+  }
+
+  const assignMilestoneToTasks = async ({
     tasks,
     milestone,
     githubMilestoneRegex,
@@ -318,30 +321,25 @@ const utils = (core, github, githubToken, asanaToken) => {
   }) => {
     const errors = {}
     const taskById = {}
-    tasks.forEach((task) => {
+    tasks.forEach(async (task) => {
       const field = task.custom_fields.find(
-        (field) =>
-          field.name.toUpperCase() === asanaMilestoneFieldName.toUpperCase(),
+        (field) => field.name.toUpperCase() === asanaMilestoneFieldName.toUpperCase()
       )
       if (!field) {
-        errors[
-          task.gid
-        ] = `Task missing custom field ${asanaMilestoneFieldName}`
+        errors[task.gid] = `Task missing custom field ${asanaMilestoneFieldName}`
         return
       }
 
       let fieldValue = null
       if (milestone) {
-        fieldValue = getTaskFieldValue({
+        fieldValue = await getTaskFieldValue({
           field,
           milestone,
           githubMilestoneRegex,
           asanaMilestoneRegex,
         })
         if (!fieldValue) {
-          errors[
-            task.gid
-          ] = `Couldn't find ${milestone} for ${asanaMilestoneFieldName}`
+          errors[task.gid] = `Couldn't find ${milestone} for ${asanaMilestoneFieldName}`
           return
         }
       }
