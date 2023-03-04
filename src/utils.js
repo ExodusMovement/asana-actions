@@ -109,7 +109,7 @@ const utils = (core, github, githubToken, asanaToken) => {
       core.info(`Didn't find milestone in asana for ${ghMilestone}. Creating it...`)
       const createdFieldValue = await addEnumValueToCustomField({
         fieldId: field.gid,
-        value: milestone,
+        value: ghMilestone,
       })
       core.info(`value created ${JSON.stringify(createdFieldValue)}`)
       return createdFieldValue
