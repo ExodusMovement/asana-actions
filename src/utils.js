@@ -114,6 +114,8 @@ const utils = (core, github, githubToken, asanaToken) => {
       core.info(`value created ${JSON.stringify(createdFieldValue)}`)
       return createdFieldValue
     }
+
+    core.info(`Found milestone ${milestoneIdForCustomEnum} in Asana`)
     return milestoneIdForCustomEnum
   }
 
