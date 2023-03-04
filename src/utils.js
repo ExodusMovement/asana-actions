@@ -106,10 +106,12 @@ const utils = (core, github, githubToken, asanaToken) => {
     })
 
     if (!milestoneIdForCustomEnum) {
+      core.info(`Didn't find milestone in asana for ${ghMilestone}. Creating it...`)
       const createdFieldValue = await addEnumValueToCustomField({
         fieldId: field.gid,
         value: milestone,
       })
+      core.info(`value created ${JSON.stringify(createdFieldValue)}`)
       return createdFieldValue
     }
     return milestoneIdForCustomEnum
@@ -309,7 +311,8 @@ const utils = (core, github, githubToken, asanaToken) => {
       name: value,
       enabled: true,
     }
-    return fetch(token)(`custom_fields/${fieldId}/enum_options`).post(data)
+    const res = await fetch(token)(`custom_fields/${fieldId}/enum_options`).post({ data })
+    return res.data
   }
 
   const assignMilestoneToTasks = async ({
