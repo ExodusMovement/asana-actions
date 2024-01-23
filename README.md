@@ -41,11 +41,15 @@ Add this to your `.github/workflows/asana-link.yml`
 
 ```
 name: Asana Link
+
 on:
   issues:
     types: [ opened, closed, edited ]
   pull_request:
     types: [ opened, closed, edited ]
+
+permissions: {}
+
 jobs:
   asana:
     runs-on: ubuntu-latest

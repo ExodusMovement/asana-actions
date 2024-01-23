@@ -260,7 +260,7 @@ const utils = (core, github, githubToken, asanaToken) => {
         const taskIds = []
         const tasksByprojectId = {} // Contains a list of task IDs per project ID.
         let matches
-        const reg = RegExp('https://app.asana.com/[0-9]/[0-9]*/[0-9]*', 'g')
+        const reg = RegExp('https://app\.asana\.com/[0-9]/[0-9]*/[0-9]*', 'g')
         while ((matches = reg.exec(line)) !== null) {
           const taskId = matches[0].split('/').slice(-1)[0]
           const projectId = matches[0].split('/').slice(-2)[0]
