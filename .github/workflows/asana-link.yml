@@ -4,6 +4,7 @@ on:
     types: [opened, closed, edited]
   pull_request:
     types: [opened, closed, edited, milestoned, demilestoned]
+permissions: {}
 concurrency: ci-${{ github.repository }}
 jobs:
   asana:
