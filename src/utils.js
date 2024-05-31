@@ -48,7 +48,7 @@ async function addAsanaComment(core, token, tasks, comment) {
     if (process.env.NODE_ENV === 'test') {
       throw exc
     }
-    core.error(`Error while commenting on task(s) (${tasks.map(stripTaskIds)})`)
+    core.error(`Error while commenting on task(s) (${tasks.map(stripTaskIds)})`, exc)
   }
 }
 
@@ -181,7 +181,7 @@ const utils = (core, github, githubToken, asanaToken) => {
       )
       core.info(`completed task(s) (${tasks.map(stripTaskIds)})`)
     } catch (exc) {
-      core.error(`Error while completing task(s) (${tasks.map(stripTaskIds)})`)
+      core.error(`Error while completing task(s) (${tasks.map(stripTaskIds)})`, exc)
     }
   }
 
@@ -216,7 +216,7 @@ const utils = (core, github, githubToken, asanaToken) => {
         )}) to sections/${validSectionIds}/addTask`,
       )
     } catch (exc) {
-      core.error(`Error while posting task(s) (${tasks.map(stripTaskIds)})`)
+      core.error(`Error while posting task(s) (${tasks.map(stripTaskIds)})`, exc)
     }
   }
 
@@ -285,7 +285,7 @@ const utils = (core, github, githubToken, asanaToken) => {
           ).get()
           return { projectId, sections: data }
         } catch (err) {
-          core.error(`Failed to fetch project ${projectId}`)
+          core.error(`Failed to fetch project ${projectId}`, err)
           return {}
         }
       }),
