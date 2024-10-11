@@ -1,6 +1,7 @@
 [
   {
     "gid": "1234",
+    "name": "Dummy Asana Task",
     "modifiedAt": "2022-01-17T16:20:59.135Z",
     "comments": [{ "text": "Dummy comment" }],
     "newComment": "<strong>Linked GitHub PR:</strong> feat: dummy PR\n<a href=\"https://github.com/ExodusMovement/exodus-mobile/pull/1234\"/>",
@@ -9,6 +10,7 @@
   },
   {
     "gid": "1235",
+    "name": "Dummy Asana Task",
     "modifiedAt": "2022-01-17T16:22:59.135Z",
     "comments": [
       {
@@ -21,6 +23,7 @@
   },
   {
     "gid": "1236",
+    "name": "Dummy Asana Task",
     "modifiedAt": "2022-01-17T16:22:59.135Z",
     "comments": [
       {
@@ -32,6 +35,7 @@
   },
   {
     "gid": "1237",
+    "name": "Dummy Asana Task",
     "modifiedAt": "2022-01-17T16:22:59.135Z",
     "comments": [
       {
@@ -43,6 +47,7 @@
   },
   {
     "gid": "1239",
+    "name": "Dummy Asana Task",
     "modifiedAt": "2022-01-17T16:22:59.135Z",
     "comments": [
       {
@@ -54,6 +59,7 @@
   },
   {
     "gid": "1240",
+    "name": "Dummy Asana Task",
     "modifiedAt": "2022-01-17T16:22:59.135Z",
     "comments": [
       {
@@ -65,6 +71,7 @@
   },
   {
     "gid": "1241",
+    "name": "Dummy Asana Task",
     "modifiedAt": "2022-01-17T16:22:59.135Z",
     "comments": [
       {
@@ -76,6 +83,7 @@
   },
   {
     "gid": "1242",
+    "name": "Dummy Asana Task",
     "modifiedAt": "2022-01-17T16:22:59.135Z",
     "comments": [
       {
@@ -87,6 +95,7 @@
   },
   {
     "gid": "1243",
+    "name": "Dummy Asana Task",
     "modifiedAt": "2022-01-17T16:22:59.135Z",
     "comments": [
       {
@@ -98,6 +107,7 @@
   },
   {
     "gid": "1250",
+    "name": "Dummy Asana Task",
     "modifiedAt": "2022-01-17T16:22:59.135Z",
     "comments": [
       {
@@ -109,6 +119,7 @@
   },
   {
     "gid": "1251",
+    "name": "Dummy Asana Task",
     "modifiedAt": "2022-01-17T16:22:59.135Z",
     "comments": [
       {
@@ -120,6 +131,7 @@
   },
   {
     "gid": "1260",
+    "name": "Dummy Asana Task",
     "modifiedAt": "2022-01-17T16:22:59.135Z",
     "comments": [
       {
@@ -131,6 +143,7 @@
   },
   {
     "gid": "1300",
+    "name": "Dummy Asana Task",
     "modifiedAt": "2022-01-17T16:22:59.135Z",
     "comments": [
       {
@@ -180,6 +193,7 @@
   },
   {
     "gid": "1301",
+    "name": "Dummy Asana Task",
     "modifiedAt": "2022-01-17T16:22:59.135Z",
     "comments": [
       {
@@ -229,6 +243,7 @@
   },
   {
     "gid": "1302",
+    "name": "Dummy Asana Task",
     "modifiedAt": "2022-01-17T16:22:59.135Z",
     "comments": [
       {
@@ -278,6 +293,7 @@
   },
   {
     "gid": "1303",
+    "name": "Dummy Asana Task",
     "modifiedAt": "2022-01-17T16:22:59.135Z",
     "comments": [
       {
@@ -334,6 +350,7 @@
   },
   {
     "gid": "1304",
+    "name": "Dummy Asana Task",
     "modifiedAt": "2022-01-17T16:22:59.135Z",
     "comments": [
       {
@@ -390,6 +407,7 @@
   },
   {
     "gid": "1305",
+    "name": "Dummy Asana Task",
     "modifiedAt": "2022-01-17T16:22:59.135Z",
     "comments": [
       {
@@ -446,6 +464,7 @@
   },
   {
     "gid": "1306",
+    "name": "Dummy Asana Task",
     "modifiedAt": "2022-01-17T16:22:59.135Z",
     "comments": [
       {
@@ -502,6 +521,7 @@
   },
   {
     "gid": "1307",
+    "name": "Dummy Asana Task",
     "modifiedAt": "2022-01-17T16:22:59.135Z",
     "comments": [
       {

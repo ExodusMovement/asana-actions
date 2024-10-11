@@ -5,6 +5,7 @@ const ACTION_MOVE_TO_SECTION_PREFIX = 'MOVE_TO_SECTION'
 const ASANA_MILESTONE_FIELD_NAME = 'Target Release Version'
 const GITHUB_MILESTONE_REGEX = '[0-9].*'
 const ASANA_MILESTONE_REGEX = '[0-9].*'
+const INCIDENT_PREFIX = '[Incident]'
 
 module.exports = async (core, github) => {
   const githubToken = core.getInput('github_token')
@@ -52,6 +53,13 @@ module.exports = async (core, github) => {
 
     if (tasks && tasks.length > 0) {
       core.info('Got matching task: ' + JSON.stringify(tasks))
+
+      if (tasks.some((task) => task.name.startsWith(INCIDENT_PREFIX))) {
+        core.info(
+          'Linked task is an incident. Adding label bugfix/incident to PR.',
+        )
+        await utils.addLabelToPR(pr.number, 'bugfix/incident :firefighter:')
+      }
     } else {
       core.error('Did not find matching task')
       if (failOnNoTask) {
