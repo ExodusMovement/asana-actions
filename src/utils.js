@@ -160,6 +160,30 @@ const utils = (core, github, githubToken, asanaToken) => {
     else return octokit.pulls.update(request)
   }
 
+  const addLabelToPR = async (prNumber, label) => {
+    const octokit = github.getOctokit(githubToken)
+
+    const { data: existingLabels } = await octokit.issues.listLabelsOnIssue({
+      owner: github.context.repo.owner,
+      repo: github.context.repo.repo,
+      issue_number: prNumber,
+    })
+
+    const labelExists = existingLabels.some((l) => l.name === label)
+
+    if (!labelExists) {
+      await octokit.issues.addLabels({
+        owner: github.context.repo.owner,
+        repo: github.context.repo.repo,
+        issue_number: prNumber,
+        labels: [label],
+      })
+      core.info(`Added label '${label}' to PR #${prNumber}`)
+    } else {
+      core.info(`Label '${label}' already exists on PR #${prNumber}`)
+    }
+  }
+
   const updateTask = async ({ id, data }) => {
     if (!data) {
       throw new Error('Tasks are required to update')
@@ -357,6 +381,7 @@ const utils = (core, github, githubToken, asanaToken) => {
   return {
     getNewPRBody,
     updatePRBody,
+    addLabelToPR,
     completeAsanaTasks,
     moveAsanaTasksToSection,
     getMatchingAsanaTasks,
