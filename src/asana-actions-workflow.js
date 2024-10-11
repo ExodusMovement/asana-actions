@@ -54,7 +54,7 @@ module.exports = async (core, github) => {
     if (tasks && tasks.length > 0) {
       core.info('Got matching task: ' + JSON.stringify(tasks))
 
-      if (tasks.some((task) => task.name?.startsWith(INCIDENT_PREFIX))) {
+      if (tasks.some((task) => task.name.startsWith(INCIDENT_PREFIX))) {
         core.info(
           'Linked task is an incident. Adding label bugfix/incident to PR.',
         )
